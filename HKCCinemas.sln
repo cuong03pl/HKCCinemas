@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HKCCinemas", "HKCCinemas\HKCCinemas.csproj", "{C1E74784-089D-4F63-911D-CA0245B4232E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1E74784-089D-4F63-911D-CA0245B4232E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1E74784-089D-4F63-911D-CA0245B4232E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E74784-089D-4F63-911D-CA0245B4232E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E74784-089D-4F63-911D-CA0245B4232E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58B2BA43-E6B8-48F2-984E-AFD673C8E20D}
+	EndGlobalSection
+EndGlobal
