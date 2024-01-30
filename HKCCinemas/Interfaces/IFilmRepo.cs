@@ -1,4 +1,5 @@
-﻿using HKCCinemas.Models;
+﻿using HKCCinemas.DTO;
+using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
 {
@@ -6,8 +7,8 @@ namespace HKCCinemas.Interfaces
     {
         List<Film> GetAllFilms();
         Film GetFilmById(int id);
-        bool CreateFilm(Film film);
-        bool UpdateFilm(Film film);
+        Task<bool> CreateFilmAsync(FilmDTO film);
+        Task<bool> UpdateFilmAsync(FilmDTO film);
         bool DeleteFilm(int id);
         int CountFilm();
     }

@@ -47,38 +47,25 @@ namespace HKCCinemas.Controllers
         }
         // PUT: api/Users/updateUser/5
         [HttpPut("updateUser/{id}")]
-        public async Task<IActionResult> PutUser(int id, [FromBody] User user)
+        public async Task<IActionResult> PutUser(int id, [FromForm] User user)
         {
-            if (id != user.Id)
+            if (_userRepo.UpdateUser(user))
             {
-                return BadRequest();
+                return Ok("Cap nhat thanh cong");
             }
-            try
-            {
-               _userRepo.UpdateUser(user);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                
-            }
-
-            return NoContent();
+            else return BadRequest(); 
         }
 
         // POST: api/Users/createUser
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("createUser")]
-        public async Task<ActionResult<User>> PostUser([FromBody] User user)
+        public async Task<ActionResult<User>> PostUser([FromForm] User user)
         {
-          if (_context.User == null)
-          {
-              return Problem("Entity set 'CinemasContext.User'  is null.");
-          }
-            else
+            if (_userRepo.CreateUser(user))
             {
-                _userRepo.CreateUser(user);
                 return Ok("Thêm thành công");
             }
+            else { return BadRequest(); }
 
            
         }

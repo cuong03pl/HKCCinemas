@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HKCCinemas.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace HKCCinemas.DTO
 {
@@ -10,11 +11,13 @@ namespace HKCCinemas.DTO
         public string Synopsis { get; set; }
         public int AgeLimit { get; set; }
         public int Duration { get; set; }
-        public int Country { get; set; }
+        public string Country { get; set; }
         public double Rating { get; set; }
         public int Status { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public string Thumbnail { get; set; }
         public string Director { get; set; }
+        public List<int> categoryIds { get; set; }
+        public string? Thumbnail { get; set; }
+        public IFormFile formFile { get; set; }
     }
 }

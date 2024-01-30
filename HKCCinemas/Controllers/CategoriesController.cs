@@ -30,12 +30,17 @@ namespace HKCCinemas.Controllers
 
         // GET: api/Categories
         [HttpGet("getAllCategoriesByFilmId/{filmId}")]
-        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategory(int filmId)
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategoryByFilmId(int filmId)
         {
-            var data = _categoryRepo.GetAllCategories(filmId);
+            var data = _categoryRepo.GetAllCategoriesByFilmId(filmId);
             return Ok(data);
         }
-
+        [HttpGet("getAllCategories")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategory()
+        {
+            var data = _categoryRepo.GetAllCategories();
+            return Ok(data);
+        }
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
@@ -70,11 +75,11 @@ namespace HKCCinemas.Controllers
 
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("{filmId}")]
-        public async Task<ActionResult<Category>> PostCategory(int filmId , [FromBody] CategoryDTO category)
+        [HttpPost]
+        public async Task<ActionResult<Category>> PostCategory( [FromBody] CategoryDTO category)
         {
             var categoryMapper = _mapper.Map<Category>(category);
-            if (_categoryRepo.CreateCategory(filmId, categoryMapper))
+            if (_categoryRepo.CreateCategory( categoryMapper))
             {
                 return Ok("Thêm thành công");
             }

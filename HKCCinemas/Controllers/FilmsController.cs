@@ -48,16 +48,15 @@ namespace HKCCinemas.Controllers
         // PUT: api/Films/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFilm(int id, [FromBody] FilmDTO film)
+        public async Task<IActionResult> PutFilm(int id, [FromForm] FilmDTO film)
         {
             if (id != film.Id)
             {
                 return BadRequest();
             }
-            var filmMapper = _mapper.Map<Film>(film);
             try
             {
-               _filmRepo.UpdateFilm(filmMapper);
+               await _filmRepo.UpdateFilmAsync(film);
                 return Ok("Cập nhật phim thành công");
             }
             catch (DbUpdateConcurrencyException)
@@ -71,11 +70,9 @@ namespace HKCCinemas.Controllers
         // POST: api/Films
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Film>> PostFilm([FromBody] FilmDTO film)
+        public async Task<ActionResult<Film>> PostFilm([FromForm] FilmDTO film)
         {
-
-            var filmMapper = _mapper.Map<Film>(film);
-            if (_filmRepo.CreateFilm(filmMapper))
+            if (await _filmRepo.CreateFilmAsync(film))
             {
                 return Ok("Thêm thành công");
             }

@@ -4,9 +4,10 @@ namespace HKCCinemas.Interfaces
 {
     public interface ICategoryRepo
     {
-        List<Category> GetAllCategories(int film_id);
+        List<Category> GetAllCategoriesByFilmId(int film_id);
+        List<Category> GetAllCategories();
         Category GetCategoryById(int id);
-        bool CreateCategory(int filmId, Category category);
+        bool CreateCategory(Category category);
         bool UpdateCategory(Category category);
         bool DeleteCategory(int id);
         int CountCategory();

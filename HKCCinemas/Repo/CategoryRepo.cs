@@ -20,16 +20,8 @@ namespace HKCCinemas.Repo
             return _context.Actor.Count();
         }
 
-        public bool CreateCategory( int filmId,Category category)
+        public bool CreateCategory(Category category)
         {
-            var film = _context.Film.Where(film => film.Id == filmId).FirstOrDefault();
-
-            var categoryFilm = new CategoryFilm()
-            {
-                Film = film,
-                Category = category
-            };
-            _context.CategoryFilm.Add(categoryFilm);
             _context.Category.Add(category);
             _context.SaveChanges();
             return true;
@@ -47,11 +39,16 @@ namespace HKCCinemas.Repo
             return _context.Category.Where(a => a.Id == id).FirstOrDefault();
         }
 
-        public List<Category> GetAllCategories(int film_id)
+        public List<Category> GetAllCategoriesByFilmId(int film_id)
         {
             var film = _context.Film.Where(f => f.Id == film_id).Include(f => f.categoryFilms).ThenInclude(f => f.Category).FirstOrDefault();
             var actorDtos = film.categoryFilms.Select(f => f.Category).ToList();
             return actorDtos;
+        }
+
+        public List<Category> GetAllCategories()
+        {
+            return _context.Category.ToList();
         }
 
         public bool UpdateCategory(Category category)
