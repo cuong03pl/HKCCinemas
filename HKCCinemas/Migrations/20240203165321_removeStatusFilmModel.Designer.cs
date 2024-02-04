@@ -4,6 +4,7 @@ using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HKCCinemas.Migrations
 {
     [DbContext(typeof(CinemasContext))]
-    partial class CinemasContextModelSnapshot : ModelSnapshot
+    [Migration("20240203165321_removeStatusFilmModel")]
+    partial class removeStatusFilmModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

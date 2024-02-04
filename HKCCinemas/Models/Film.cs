@@ -13,9 +13,8 @@ namespace HKCCinemas.Models
         public int Duration { get; set; }
         public string Country { get; set; }
         public double Rating { get; set; }
-        public int Status { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public string Thumbnail { get; set; }
+        public DateTime? ReleaseDate { get; set; }
+        public string? Thumbnail { get; set; }
         public string Director { get; set; }
         public ICollection<FilmActor> filmActors { get; set; }
         public ICollection<CategoryFilm> categoryFilms { get; set; }

@@ -78,9 +78,11 @@ namespace HKCCinemas.Repo
             return _context.Film.Where(f => f.Id == id).FirstOrDefault();
         }
 
-        public async Task<bool> UpdateFilmAsync(FilmDTO film)
+        public async Task<bool> UpdateFilmAsync(int id, FilmDTO film)
         {
-            if (film.formFile != null)
+            var filmNow = _context.Film.Where(f => f.Id == id).FirstOrDefault();
+            
+            if (film.formFile != null && film.formFile.Length > 0)
             {
                 var fileName = film.formFile.FileName;
                 var webPath = _evn.WebRootPath;
@@ -90,23 +92,44 @@ namespace HKCCinemas.Repo
                 {
                     await film.formFile.CopyToAsync(stream);
                 }
-
                 film.Thumbnail = pathToSave;
             }
-
-            var filmMapper = _mapper.Map<Film>(film);
-            foreach (var item in film.categoryIds)
+            else
             {
-                var cate = _context.Category.Where(c => c.Id == item).FirstOrDefault();
-
-                var categoryFilm = new CategoryFilm()
-                {
-                    Film = filmMapper,
-                    Category = cate
-                };
-                _context.CategoryFilm.Update(categoryFilm);
+                film.Thumbnail = filmNow.Thumbnail;
             }
-            _context.Film.Update(filmMapper);
+            filmNow.Title = film.Title;
+            filmNow.Detail = film.Detail;
+            filmNow.Synopsis = film.Synopsis;
+            filmNow.AgeLimit = film.AgeLimit;
+            filmNow.Duration = film.Duration;
+            filmNow.Country = film.Country;
+            filmNow.Rating = film.Rating;
+            filmNow.ReleaseDate = film.ReleaseDate;
+            filmNow.Director = film.Director;
+            filmNow.Thumbnail = film.Thumbnail;
+            // xóa các categoryFilm cũ
+            if(film.categoryIds != null)
+            {
+                var filmCategoryOld = _context.CategoryFilm.Where(c => c.FilmId == id);
+                foreach (var c in filmCategoryOld)
+                {
+                    _context.CategoryFilm.Remove(c);
+                }
+
+                foreach (var item in film.categoryIds)
+                {
+                    var cate = _context.Category.Where(c => c.Id == item).FirstOrDefault();
+                    var categoryFilm = new CategoryFilm()
+                    {
+                        Film = filmNow,
+                        Category = cate
+                    };
+                    _context.CategoryFilm.Add(categoryFilm);
+                }
+            }
+           
+            _context.Film.Update(filmNow);
             _context.SaveChanges();
 
             return true;

@@ -13,11 +13,10 @@ namespace HKCCinemas.DTO
         public int Duration { get; set; }
         public string Country { get; set; }
         public double Rating { get; set; }
-        public int Status { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
         public string Director { get; set; }
-        public List<int> categoryIds { get; set; }
+        public List<int>? categoryIds { get; set; }
         public string? Thumbnail { get; set; }
-        public IFormFile formFile { get; set; }
+        public IFormFile? formFile { get; set; }
     }
 }
