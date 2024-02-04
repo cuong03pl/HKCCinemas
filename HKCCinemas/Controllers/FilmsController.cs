@@ -51,9 +51,11 @@ namespace HKCCinemas.Controllers
         public async Task<IActionResult> PutFilm(int id, [FromForm] FilmDTO film)
         {
             
-               await _filmRepo.UpdateFilmAsync(id,film);
+            if(await _filmRepo.UpdateFilmAsync(id, film))
+            {
                 return Ok("Cập nhật phim thành công");
-           
+            }
+            else return BadRequest( "Cập nhật phim thất bại");
         }
 
         // POST: api/Films

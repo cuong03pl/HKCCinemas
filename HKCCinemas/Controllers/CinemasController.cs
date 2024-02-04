@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HKCCinemas.Models;
 using AutoMapper;
 using HKCCinemas.Interfaces;
+using HKCCinemas.DTO;
 
 namespace HKCCinemas.Controllers
 {
@@ -44,30 +45,23 @@ namespace HKCCinemas.Controllers
 
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCinemas(int id, Cinemas cinemas)
+        public async Task<IActionResult> PutCinemas(int id, [FromForm] CinemasDTO cinemas)
         {
-            if (id != cinemas.Id)
-            {
-                return BadRequest();
-            }
-            try
-            {
-                _cinemasRepo.UpdateCinemas(cinemas);
-                return Ok("Sua thanh cong");
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return BadRequest();
-            }
-
-            return NoContent();
+              if(  await _cinemasRepo.UpdateCinemas(id, cinemas))
+                {
+                    return Ok("Sửa rạp thành công");
+                }
+              else
+                {
+                    return BadRequest();
+                }
         }
 
       
         [HttpPost]
-        public async Task<ActionResult<Cinemas>> PostCinemas([FromBody] Cinemas cinemas)
+        public async Task<ActionResult<Cinemas>> PostCinemas([FromForm] CinemasDTO cinemas)
         {
-            if (_cinemasRepo.CreateCinemas(cinemas))
+            if (await _cinemasRepo.CreateCinemasAsync(cinemas))
             {
                 return Ok("Thêm rạp thành công");
             }
@@ -80,7 +74,7 @@ namespace HKCCinemas.Controllers
         {
             if (_cinemasRepo.DeleteCinemas(id))
             {
-                return Ok("Xóa thành công");
+                return Ok("Xóa rạp thành công");
             }
             else return BadRequest();
         }

@@ -51,9 +51,9 @@ namespace HKCCinemas.Controllers
         {
             if (_userRepo.UpdateUser(user))
             {
-                return Ok("Cap nhat thanh cong");
+                return Ok("Cập nhật thông tin user thành công");
             }
-            else return BadRequest(); 
+            else return BadRequest("Cập nhật thất bại"); 
         }
 
         // POST: api/Users/createUser
@@ -63,9 +63,9 @@ namespace HKCCinemas.Controllers
         {
             if (_userRepo.CreateUser(user))
             {
-                return Ok("Thêm thành công");
+                return Ok("Thêm user thành công");
             }
-            else { return BadRequest(); }
+            else { return BadRequest("Thêm user thất bại"); }
 
            
         }
@@ -76,9 +76,9 @@ namespace HKCCinemas.Controllers
         {
             if (_userRepo.DeleteUser(id))
             {
-                return Ok("Xóa thành công");
+                return Ok("Xóa user thành công");
             }
-            else return BadRequest();
+            else return BadRequest("Xóa user thất bại");
         }
 
         // GET: api/Users/countUser

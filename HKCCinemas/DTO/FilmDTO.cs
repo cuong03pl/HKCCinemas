@@ -6,6 +6,7 @@ namespace HKCCinemas.DTO
     public class FilmDTO
     {
         public int Id { get; set; }
+        [Required]
         public string Title { get; set; }
         public string Detail { get; set; }
         public string Synopsis { get; set; }
@@ -16,7 +17,7 @@ namespace HKCCinemas.DTO
         public DateTime? ReleaseDate { get; set; }
         public string Director { get; set; }
         public List<int>? categoryIds { get; set; }
-        public string? Thumbnail { get; set; }
+        public string? Image { get; set; }
         public IFormFile? formFile { get; set; }
     }
 }

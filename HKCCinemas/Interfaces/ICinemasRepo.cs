@@ -1,4 +1,5 @@
-﻿using HKCCinemas.Models;
+﻿using HKCCinemas.DTO;
+using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
 {
@@ -6,8 +7,8 @@ namespace HKCCinemas.Interfaces
     {
         List<Cinemas> GetAllCinemas();
         Cinemas GetCinemasById(int id);
-        bool CreateCinemas(Cinemas cinemas);
-        bool UpdateCinemas(Cinemas cinemas);
+        Task<bool> CreateCinemasAsync(CinemasDTO cinemas);
+        Task<bool> UpdateCinemas(int id, CinemasDTO cinemas);
         bool DeleteCinemas(int id);
         int CountCinemas();
     }
