@@ -9,20 +9,22 @@ namespace HKCCinemas.Repo
     public class CategoryRepo : ICategoryRepo
     {
         private readonly CinemasContext _context;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
 
-        public CategoryRepo(CinemasContext context)
+        public CategoryRepo(CinemasContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public int CountCategory()
         {
             return _context.Actor.Count();
         }
 
-        public bool CreateCategory(Category category)
+        public bool CreateCategory(CategoryDTO category)
         {
-            _context.Category.Add(category);
+            var categoryMapper = _mapper.Map<Category>(category);
+            _context.Category.Add(categoryMapper);
             _context.SaveChanges();
             return true;
         }
@@ -51,9 +53,11 @@ namespace HKCCinemas.Repo
             return _context.Category.ToList();
         }
 
-        public bool UpdateCategory(Category category)
+        public bool UpdateCategory(int id, CategoryDTO category)
         {
-            _context.Entry(category).State = EntityState.Modified;
+            var categoryNow = _context.Category.Where(f => f.Id == id).FirstOrDefault();
+            categoryNow.Name = category.Name;
+            _context.Category.Update(categoryNow);
             _context.SaveChanges();
             return true;
         }

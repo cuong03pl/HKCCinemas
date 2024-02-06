@@ -52,34 +52,21 @@ namespace HKCCinemas.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory(int id, [FromForm] CategoryDTO category)
         {
-            if (id != category.Id)
+            if(_categoryRepo.UpdateCategory(id, category))
             {
-                return BadRequest();
+                return Ok("Cập nhật thành công");
             }
-
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-               
-            }
-
-            return NoContent();
+            else { return BadRequest(); }
         }
 
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory( [FromBody] CategoryDTO category)
+        public async Task<ActionResult<Category>> PostCategory( [FromForm] CategoryDTO category)
         {
-            var categoryMapper = _mapper.Map<Category>(category);
-            if (_categoryRepo.CreateCategory( categoryMapper))
+            if (_categoryRepo.CreateCategory(category))
             {
                 return Ok("Thêm thành công");
             }
@@ -92,7 +79,7 @@ namespace HKCCinemas.Controllers
         {
             if (_categoryRepo.DeleteCategory(id))
             {
-                return Ok("xóa thanhf công ");
+                return Ok("Xóa thành công ");
             }
             else return BadRequest();
         }

@@ -1,4 +1,5 @@
-﻿using HKCCinemas.Models;
+﻿using HKCCinemas.DTO;
+using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
 {
@@ -7,8 +8,8 @@ namespace HKCCinemas.Interfaces
         List<Category> GetAllCategoriesByFilmId(int film_id);
         List<Category> GetAllCategories();
         Category GetCategoryById(int id);
-        bool CreateCategory(Category category);
-        bool UpdateCategory(Category category);
+        bool CreateCategory(CategoryDTO category);
+        bool UpdateCategory(int id, CategoryDTO category);
         bool DeleteCategory(int id);
         int CountCategory();
     }

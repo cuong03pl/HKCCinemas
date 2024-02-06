@@ -33,39 +33,35 @@ namespace HKCCinemas.Controllers
         [HttpGet("getActorByFimlId/{film_id}")]
         public  IActionResult GetActorByFimlId(int film_id)
         {
-            var data = _mapper.Map<List<ActorDTO>> (_actorRepo.GetAllActors(film_id));
+            var data = _mapper.Map<List<ActorDTO>> (_actorRepo.GetAllActorsByFilmId(film_id));
             return Ok(data);
         }
 
+        // GET: api/Actors
+        [HttpGet("getAllActors")]
+        public IActionResult GetAllActors()
+        {
+            var data = _mapper.Map<List<ActorDTO>>(_actorRepo.GetAllActors());
+            return Ok(data);
+        }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutActor(int id, [FromBody] ActorDTO actor)
+        public async Task<IActionResult> PutActor(int id, [FromForm] ActorDTO actor)
         {
-            if (id != actor.Id)
+            if (await _actorRepo.UpdateActorAsync(id, actor))
             {
-                return BadRequest();
+                return Ok("Cap nhat thanh cong");
             }
-            try
-            {
-                var actorMapper = _mapper.Map<Actor>(actor);
-                _actorRepo.UpdateActor(actorMapper);
-                return Ok("Sửa thành công");
-            }
-            catch (DbUpdateConcurrencyException)
-            {
+            else return BadRequest();
                
-            }
-
-            return NoContent();
         }
 
         // POST: api/Actors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("{filmId}")]
-        public async Task<ActionResult<Actor>> PostActor( int filmId,[FromBody] ActorDTO actor)
+        [HttpPost]
+        public async Task<ActionResult<Actor>> PostActor( [FromForm] ActorDTO actor)
         {
-            var actorMapper = _mapper.Map<ActorDTO, Actor>(actor);
-            if (_actorRepo.CreateActor(filmId, actorMapper))
+            if (await _actorRepo.CreateActorAsync(actor))
             {
                 return Ok("Thêm thành công");
             }
