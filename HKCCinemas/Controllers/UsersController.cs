@@ -23,70 +23,43 @@ namespace HKCCinemas.Controllers
             _context = context;
             _userRepo = userRepo;
         }
-
-        // GET: api/Users
-        [HttpGet("getAllUsers")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> getAllUsers()
         {
-          var data = _userRepo.GetAllUsers();
+            var data = _userRepo.GetAllUsers();
             return Ok(data);
         }
 
-        // GET: api/Users/getUserById/5
         [HttpGet("getUserById/{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
+        public ActionResult<User> GetUserById(string id)
         {
             var data = _userRepo.GetUserById(id);
             return Ok(data);
         }
+
         [HttpGet("getUserByUserName/{username}")]
-        public async Task<ActionResult<User>> GetUserByUserName(string username)
+        public ActionResult<User> GetUserByUserName(string username)
         {
             var data = _userRepo.GetUserByUserName(username);
             return Ok(data);
         }
-        // PUT: api/Users/updateUser/5
-        [HttpPut("updateUser/{id}")]
-        public async Task<IActionResult> PutUser(int id, [FromForm] User user)
+        [HttpGet("getCountUser")]
+        public ActionResult<User> GetCountUser()
         {
-            if (_userRepo.UpdateUser(user))
-            {
-                return Ok("Cập nhật thông tin user thành công");
-            }
-            else return BadRequest("Cập nhật thất bại"); 
-        }
-
-        // POST: api/Users/createUser
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("createUser")]
-        public async Task<ActionResult<User>> PostUser([FromForm] User user)
-        {
-            if (_userRepo.CreateUser(user))
-            {
-                return Ok("Thêm user thành công");
-            }
-            else { return BadRequest("Thêm user thất bại"); }
-
-           
-        }
-
-        // DELETE: api/Users/deleteUser/5
-        [HttpDelete("deleteUser/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            if (_userRepo.DeleteUser(id))
-            {
-                return Ok("Xóa user thành công");
-            }
-            else return BadRequest("Xóa user thất bại");
-        }
-
-        // GET: api/Users/countUser
-        [HttpGet("countUser")]
-        public IActionResult GetCountUser()
-        {
-            int data = _userRepo.GetCountUser();
+            var data = _userRepo.GetCountUser();
             return Ok(data);
         }
+
+        [HttpDelete("deleteUser/{id}")]
+        public async Task<ActionResult<User>> DeleteUser(string id)
+        {
+            var data = await _userRepo.DeleteUser(id);
+            if (data)
+            {
+                return Ok("Xóa người dùng thành công");
+            }
+            return BadRequest("Xóa người dùng thất bại ");
+        }
+
     }
 }

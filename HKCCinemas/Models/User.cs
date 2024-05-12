@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace HKCCinemas.Models
 {
-    public class User
+    public class User: IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập tên người dùng.")]
+        public override string UserName { get; set; }
     }
 }

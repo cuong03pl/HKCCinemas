@@ -10,7 +10,7 @@ namespace HKCCinemas.Models
         public DateTime Time { get; set; }
         public string Content { get; set; }
 
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public int FilmId { get; set; }
 
         [ForeignKey("UserID")]

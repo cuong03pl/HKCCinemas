@@ -15,6 +15,8 @@ namespace HKCCinemas.Helper
             CreateMap<CategoryDTO, Category>();
             CreateMap<CinemasDTO, Cinemas>();
             CreateMap<Cinemas, CinemasDTO>();
+            CreateMap<Trailer, TrailerDTO>();
+            CreateMap<TrailerDTO, Trailer>();
         }
     }
 }

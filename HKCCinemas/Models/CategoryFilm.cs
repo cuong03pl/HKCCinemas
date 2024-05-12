@@ -7,10 +7,8 @@ namespace HKCCinemas.Models
         public int CategoryId { get; set; }
         public int FilmId { get; set; }
 
-        [ForeignKey("FilmId")]
         public Film Film { get; set; }
 
-        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
     }

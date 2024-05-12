@@ -18,11 +18,41 @@ namespace HKCCinemas.Repo
             _mapper = mapper;  
             _evn = evn;
         }
+        
+        // get
         public int CountFilm()
         {
             return _context.Film.Count();
         }
-
+        public List<Film> GetAllFilms()
+        {
+            return _context.Film.ToList();
+        }
+        public List<Film> GetTop5Films()
+        {
+            return _context.Film.OrderByDescending(f => f.Rating).Take(5).ToList();
+        }
+        public Film GetFilmById(int id)
+        {
+            return _context.Film.Where(f => f.Id == id).FirstOrDefault();
+        }
+        public List<Film> GetNowShowingFilms()
+        {
+            DateTime now = DateTime.Now;
+            return _context.Film.Where(f => f.ReleaseDate <= now && f.EndDate >= now).ToList();
+        }
+        public List<Film> GetUpcomingFilms()
+        {
+            DateTime now = DateTime.Now;
+            return _context.Film.Where(f =>  f.ReleaseDate > now).ToList();
+        }
+        public List<Film> GetSimilarFilm(int filmId)
+        {
+            var categoryIs = _context.CategoryFilm.Where(cf => cf.FilmId == filmId).Select(cf => cf.CategoryId).ToList();
+            var data = _context.CategoryFilm.Where(cf => categoryIs.Contains(cf.CategoryId)).Include(cf => cf.Film).Select(cf => cf.Film).Distinct().ToList();  
+            return data;
+        }
+        // create
         public async Task<bool> CreateFilmAsync(FilmDTO film)
         {
             if (film.formFile != null)
@@ -59,6 +89,7 @@ namespace HKCCinemas.Repo
             return true;
         }
 
+        //delete
         public bool DeleteFilm(int id)
         {
             _context.Film.Remove(GetFilmById(id));
@@ -66,16 +97,7 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<Film> GetAllFilms()
-        {
-            return _context.Film.ToList();
-        }
-
-        public Film GetFilmById(int id)
-        {
-            return _context.Film.Where(f => f.Id == id).FirstOrDefault();
-        }
-
+        //update
         public async Task<bool> UpdateFilmAsync(int id, FilmDTO film)
         {
             try
@@ -106,6 +128,7 @@ namespace HKCCinemas.Repo
                 filmNow.Country = film.Country;
                 filmNow.Rating = film.Rating;
                 filmNow.ReleaseDate = film.ReleaseDate;
+                filmNow.EndDate = film.EndDate;
                 filmNow.Director = film.Director;
                 filmNow.Image = film.Image;
                 // xóa các categoryFilm cũ

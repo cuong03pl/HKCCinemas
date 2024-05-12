@@ -19,8 +19,6 @@ namespace HKCCinemas.Controllers
         private readonly CinemasContext _context;
         private readonly ICategoryRepo _categoryRepo;
         private readonly IMapper _mapper;
-
-
         public CategoriesController(CinemasContext context, ICategoryRepo categoryRepo, IMapper mapper)
         {
             _context = context;

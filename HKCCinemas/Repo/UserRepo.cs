@@ -1,59 +1,50 @@
 ﻿using AutoMapper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HKCCinemas.Repo
 {
     public class UserRepo : IUserRepo
     {
-        private readonly CinemasContext _context;
+        private readonly UserManager<User> userManager;
         private readonly Mapper _mapper;
 
-        public UserRepo(CinemasContext context) {
-            _context = context;
+        public UserRepo(UserManager<User> _userManager) {
+            userManager = _userManager;
         }
-
-        public int GetCountUser()
-        {
-            return _context.User.Count();
-        }
-
-        public bool CreateUser(User user)
-        {
-           _context.User.Add(user);
-            _context.SaveChanges();
-            return true;
-        }
-
-        public bool DeleteUser(int id)
-        {
-            _context.User.Remove(GetUserById(id));
-            _context.SaveChanges(); 
-            return true;
-        }
-
         public List<User> GetAllUsers()
         {
-            return _context.User.ToList();
+            return userManager.Users.ToList();
         }
-
-        public User GetUserById(int id)
+        public User GetUserById(string id)
         {
-            return _context.User.Where(u => u.Id == id).FirstOrDefault();
+            return userManager.Users.Where(u => u.Id == id).FirstOrDefault();
         }
-
         public User GetUserByUserName(string username)
         {
-            return _context.User.Where(u => u.Username == username).FirstOrDefault();
-
+            return userManager.Users.Where(u => u.UserName == username).FirstOrDefault();
         }
-
-        public bool UpdateUser(User user)
+        public async Task<bool> DeleteUser(string id)
         {
-            _context.Entry(user).State = EntityState.Modified;
-            _context.SaveChanges();
-            return true;
+            var user = GetUserById(id);
+            if(user == null)
+            {
+                return false;
+            }
+            var result = await userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
         }
+        public int GetCountUser()
+        {
+            return userManager.Users.Count();
+        }
+
+        
     }
 }

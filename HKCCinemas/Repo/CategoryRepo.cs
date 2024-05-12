@@ -43,9 +43,13 @@ namespace HKCCinemas.Repo
 
         public List<Category> GetAllCategoriesByFilmId(int film_id)
         {
-            var film = _context.Film.Where(f => f.Id == film_id).Include(f => f.categoryFilms).ThenInclude(f => f.Category).FirstOrDefault();
-            var actorDtos = film.categoryFilms.Select(f => f.Category).ToList();
-            return actorDtos;
+
+            var categories =  _context.CategoryFilm
+                .Where(cf => cf.FilmId == film_id)
+                .Select(cf => cf.Category)
+                .ToList();
+
+            return categories;
         }
 
         public List<Category> GetAllCategories()

@@ -27,7 +27,7 @@ namespace HKCCinemas.Controllers
             _filmRepo = filmRepo;
             _mapper = mapper;
         }
-
+        // get
         // GET: api/Films
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Film>>> GetAllFilms()
@@ -37,6 +37,13 @@ namespace HKCCinemas.Controllers
 
         }
 
+        [HttpGet("getTop5")]
+        public async Task<ActionResult<IEnumerable<Film>>> GetTop5Films()
+        {
+            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetTop5Films());
+            return Ok(data);
+
+        }
         // GET: api/Films/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Film>> GetFilm(int id)
@@ -45,6 +52,26 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
 
+        [HttpGet("getNowShowingFilms")]
+        public async Task<ActionResult<Film>> GetNowShowingFilms()
+        {
+            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetNowShowingFilms());
+            return Ok(data);
+        }
+        
+        [HttpGet("getUpcomingFilms")]
+        public async Task<ActionResult<Film>> GetUpcomingFilms()
+        {
+            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetUpcomingFilms());
+            return Ok(data);
+        }
+
+        [HttpGet("getSimilarFilm/{categoryId}")]
+        public async Task<ActionResult<Film>> GetSimilarFilms(int categoryId)
+        {
+            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetSimilarFilm(categoryId));
+            return Ok(data);
+        }
         // PUT: api/Films/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

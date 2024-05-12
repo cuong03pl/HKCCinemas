@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 namespace HKCCinemas.Models
 {
-    public class CinemasContext : DbContext
+    public class CinemasContext : IdentityDbContext<User>
     {
         public CinemasContext(DbContextOptions options) : base(options)
         {
@@ -46,7 +47,7 @@ namespace HKCCinemas.Models
         public DbSet<Film> Film { get; set; }
         public DbSet<ShowTimes> ShowTime { get; set; }
         public DbSet<Time> Time { get; set; }
-        public DbSet<User> User { get; set; }
         public DbSet<FilmActor> FilmActors { get; set; }
+        public DbSet<Trailer> Trailers { get; set; }
     }
 }

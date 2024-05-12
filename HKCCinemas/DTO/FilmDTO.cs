@@ -15,6 +15,7 @@ namespace HKCCinemas.DTO
         public string Country { get; set; }
         public double Rating { get; set; }
         public DateTime? ReleaseDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string Director { get; set; }
         public List<int>? categoryIds { get; set; }
         public string? Image { get; set; }
