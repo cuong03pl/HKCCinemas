@@ -65,5 +65,15 @@ namespace HKCCinemas.Repo
             _context.SaveChanges();
             return true;
         }
+
+        public List<int> GetAllCategoryIdsByFilmId(int film_id)
+        {
+            var categories = _context.CategoryFilm
+               .Where(cf => cf.FilmId == film_id)
+               .Select(cf => cf.Category.Id)
+               .ToList();
+
+            return categories;
+        }
     }
 }

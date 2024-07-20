@@ -34,7 +34,12 @@ namespace HKCCinemas.Controllers
          var data = _cinemasRepo.GetAllCinemas();
             return Ok(data);
         }
-
+        [HttpGet("GetCinemasByCategoryId/{cinemasId}")]
+        public async Task<ActionResult<IEnumerable<Cinemas>>> GetCinemasByCategoryId(int cinemasId)
+        {
+            var data = _cinemasRepo.GetCinemasByCategoryId(cinemasId);
+            return Ok(data);
+        }
         // GET: api/Cinemas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cinemas>> GetCinemas(int id)
@@ -43,13 +48,20 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
 
+        [HttpGet("getCount")]
+        public async Task<ActionResult<Cinemas>> CountCinemas()
+        {
+            var data = _cinemasRepo.CountCinemas();
+            return Ok(data);
+        }
         
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCinemas(int id, [FromForm] CinemasDTO cinemas)
         {
               if(  await _cinemasRepo.UpdateCinemas(id, cinemas))
                 {
-                    return Ok("Sửa rạp thành công");
+                    return Ok("Sửa thành công");
                 }
               else
                 {

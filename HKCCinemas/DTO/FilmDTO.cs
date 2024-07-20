@@ -19,6 +19,9 @@ namespace HKCCinemas.DTO
         public string Director { get; set; }
         public List<int>? categoryIds { get; set; }
         public string? Image { get; set; }
+        public string? Background { get; set; }
         public IFormFile? formFile { get; set; }
+
+        public IFormFile? formFileBackground { get; set; }
     }
 }

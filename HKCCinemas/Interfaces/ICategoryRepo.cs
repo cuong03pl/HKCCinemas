@@ -6,6 +6,7 @@ namespace HKCCinemas.Interfaces
     public interface ICategoryRepo
     {
         List<Category> GetAllCategoriesByFilmId(int film_id);
+        List<int> GetAllCategoryIdsByFilmId(int film_id);
         List<Category> GetAllCategories();
         Category GetCategoryById(int id);
         bool CreateCategory(CategoryDTO category);

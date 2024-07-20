@@ -1,4 +1,5 @@
-﻿using HKCCinemas.Interfaces;
+﻿using HKCCinemas.Helper;
+using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -14,25 +15,35 @@ namespace HKCCinemas.Repo
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration configuration;
         private readonly SignInManager<User> signInManager;
+        private readonly RandomAvatar randomAvatar;
 
         public AccountRepo(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
-                IConfiguration configuration, SignInManager<User> signInManager
+                IConfiguration configuration, SignInManager<User> signInManager, RandomAvatar randomAvatar
             ) {
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.configuration = configuration;
             this.signInManager = signInManager;
+            this.randomAvatar = randomAvatar;
         }
         public async Task<string> Login(LoginModel loginModel)
         {
                 var result = await signInManager.PasswordSignInAsync(loginModel.Username, loginModel.Password, false, false);
-                if (result.Succeeded) {
+
+            if (result.Succeeded) {
+                var user = await userManager.FindByNameAsync(loginModel.Username);
+                var userRoles = await userManager.GetRolesAsync(user);
+                var userId = user.Id;
                 var authClaims = new List<Claim>
                     {
-                    new Claim(ClaimTypes.NameIdentifier, loginModel.Username),
+                    new Claim(ClaimTypes.Name, userId),
                         new Claim(ClaimTypes.Name, loginModel.Username),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
+                foreach (var role in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                }
                 var token = GetToken(authClaims);
                 return new JwtSecurityTokenHandler().WriteToken(token);
             }
@@ -51,9 +62,22 @@ namespace HKCCinemas.Repo
             {
                 UserName = registerModel.Username,
                 Email = registerModel.Email,
+                Avatar = randomAvatar.GenerateRandomAvatar(),
             };
-            return await userManager.CreateAsync(newUser, registerModel.Password );
+            var result = await userManager.CreateAsync(newUser, registerModel.Password);
+
+            if (!await roleManager.RoleExistsAsync(AppRole.Customer))
+            {
+                await roleManager.CreateAsync(new IdentityRole(AppRole.Customer));
+
+            }
+            await userManager.AddToRoleAsync(newUser, AppRole.Customer);
+            return result;
+                
         }
+
+
+
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));

@@ -1,3 +1,4 @@
+﻿using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using HKCCinemas.Repo;
@@ -25,10 +26,22 @@ builder.Services.AddScoped<ICinemasRepo, CinemasRepo>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
 builder.Services.AddScoped<ITrailerRepo, TrailerRepo>();
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
+builder.Services.AddScoped<ICommentRepo, CommentRepo>();
+builder.Services.AddScoped<ICinemasCategoryRepo, CinemasCategoryRepo>();
+builder.Services.AddScoped<IRoomRepo, RoomRepo>();
+builder.Services.AddScoped<IScheduleRepo, ScheduleRepo>();
+builder.Services.AddScoped<ISeatRepo, SeatRepo>();
+builder.Services.AddScoped<IShowDateRepo, ShowDateRepo>();
+builder.Services.AddScoped<ITicketRepo, TicketRepo>();
+builder.Services.AddScoped<IBookingUserRepo, BookingUserRepo>();
+builder.Services.AddScoped<IRoleRepo, RoleRepo>();
+builder.Services.AddScoped<IFavouriteRepo, FavouriteRepo>();
+builder.Services.AddScoped<RandomAvatar>();
 builder.Services.AddDbContext<CinemasContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("HKCCinemasContext"));
 });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin", builder =>
@@ -36,18 +49,21 @@ builder.Services.AddCors(options =>
         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
+
 builder.Services.AddAuthorization(options =>
 {
     options.DefaultPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
 });
+
 builder.Services.AddIdentity<User, IdentityRole>(opt =>
 {
     opt.Password.RequireNonAlphanumeric = false;
     opt.Password.RequireUppercase = false;
-}).
-    AddEntityFrameworkStores<CinemasContext>().AddDefaultTokenProviders();
+})
+.AddEntityFrameworkStores<CinemasContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -67,22 +83,18 @@ builder.Services.AddAuthentication(opt =>
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
     };
-}); 
-
-
-
-
+});
 
 var app = builder.Build();
 app.UseCors("AllowOrigin");
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseStaticFiles();
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

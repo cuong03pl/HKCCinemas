@@ -24,18 +24,31 @@ namespace HKCCinemas.Repo
 
         public async Task<bool> CreateCinemasAsync(CinemasDTO cinemas)
         {
-            if (cinemas.formFile != null)
+            if (cinemas.formFileImage != null)
             {
-                var fileName = cinemas.formFile.FileName;
+                var fileName = cinemas.formFileImage.FileName;
                 var webPath = _evn.WebRootPath;
                 var path = Path.Combine("", webPath + @"\Images\" + fileName);
                 var pathToSave = @"/Images/" + fileName;
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    await cinemas.formFile.CopyToAsync(stream);
+                    await cinemas.formFileImage.CopyToAsync(stream);
                 }
 
                 cinemas.Image = pathToSave;
+            }
+            if (cinemas.formFileBackground != null)
+            {
+                var fileName = cinemas.formFileBackground.FileName;
+                var webPath = _evn.WebRootPath;
+                var path = Path.Combine("", webPath + @"\Images\" + fileName);
+                var pathToSave = @"/Images/" + fileName;
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await cinemas.formFileBackground.CopyToAsync(stream);
+                }
+
+                cinemas.Background = pathToSave;
             }
 
             var cinemasMapper = _mapper.Map<Cinemas>(cinemas);
@@ -43,7 +56,7 @@ namespace HKCCinemas.Repo
             _context.SaveChanges();
 
             return true;
-            
+
         }
 
         public bool DeleteCinemas(int id)
@@ -57,24 +70,29 @@ namespace HKCCinemas.Repo
         {
             return _context.Cinemas.ToList();
         }
-
+        public List<Cinemas> GetCinemasByCategoryId(int categoryId)
+        {
+            return _context.Cinemas.Where(c => c.CinemasCategoryId == categoryId).ToList();
+        }
         public Cinemas GetCinemasById(int id)
         {
-          return  _context.Cinemas.Where(c => c.Id == id).FirstOrDefault();
+            return _context.Cinemas.Where(c => c.Id == id).FirstOrDefault();
         }
+
+
 
         public async Task<bool> UpdateCinemas(int id, CinemasDTO cinemas)
         {
             var cinemasNow = _context.Cinemas.Where(c => c.Id == id).FirstOrDefault();
-            if (cinemas.formFile != null && cinemas.formFile.Length > 0)
+            if (cinemas.formFileImage != null && cinemas.formFileImage.Length > 0)
             {
-                var fileName = cinemas.formFile.FileName;
+                var fileName = cinemas.formFileImage.FileName;
                 var webPath = _evn.WebRootPath;
                 var path = Path.Combine("", webPath + @"\Images\" + fileName);
                 var pathToSave = @"/Images/" + fileName;
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    await cinemas.formFile.CopyToAsync(stream);
+                    await cinemas.formFileImage.CopyToAsync(stream);
                 }
 
                 cinemas.Image = pathToSave;
@@ -83,9 +101,29 @@ namespace HKCCinemas.Repo
             {
                 cinemas.Image = cinemasNow.Image;
             }
+            if (cinemas.formFileBackground != null && cinemas.formFileBackground.Length > 0)
+            {
+                var fileName2 = cinemas.formFileBackground.FileName;
+                var webPath2 = _evn.WebRootPath;
+                var path2 = Path.Combine("", webPath2 + @"\Images\" + fileName2);
+                var pathToSave2 = @"/Images/" + fileName2;
+                using (var stream = new FileStream(path2, FileMode.Create))
+                {
+                    await cinemas.formFileBackground.CopyToAsync(stream);
+                }
+
+                cinemas.Background = pathToSave2;
+            }
+            else
+            {
+                cinemas.Background = cinemasNow.Background;
+            }
+
             cinemasNow.Name = cinemas.Name;
             cinemasNow.Address = cinemas.Address;
             cinemasNow.Image = cinemas.Image;
+            cinemasNow.Background = cinemas.Background;
+            cinemasNow.CinemasCategoryId = cinemasNow.CinemasCategoryId;
             _context.Cinemas.Update(cinemasNow);
             _context.SaveChanges();
             return true;

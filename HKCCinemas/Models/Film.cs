@@ -17,6 +17,7 @@ namespace HKCCinemas.Models
         public DateTime? ReleaseDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string? Image { get; set; }
+        public string? Background { get; set; }
         public string Director { get; set; }
         public ICollection<FilmActor> filmActors { get; set; }
         public ICollection<CategoryFilm> categoryFilms { get; set; }

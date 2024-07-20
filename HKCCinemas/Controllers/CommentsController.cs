@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HKCCinemas.Models;
+using HKCCinemas.Repo;
+using HKCCinemas.Interfaces;
+using HKCCinemas.DTO;
+using AutoMapper;
 
 namespace HKCCinemas.Controllers
 {
@@ -14,110 +18,53 @@ namespace HKCCinemas.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly CinemasContext _context;
+        private readonly ICommentRepo commentRepo;
+        private readonly IMapper _mapper;
 
-        public CommentsController(CinemasContext context)
+        public CommentsController(CinemasContext context, ICommentRepo commentRepo, IMapper mapper)
         {
             _context = context;
+            this.commentRepo = commentRepo;
+            _mapper = mapper;
         }
-
-        // GET: api/Comments
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
+        [HttpGet("GetAllComment")]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllComment()
         {
-          if (_context.Comment == null)
-          {
-              return NotFound();
-          }
-            return await _context.Comment.ToListAsync();
+            var data = _mapper.Map<List<Comment>>(commentRepo.GetComments());
+            return Ok(data);
         }
-
-        // GET: api/Comments/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Comment>> GetComment(int id)
+        [HttpGet("/getcommentbyfilmid/{filmid}")]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsByFilmId(int filmid)
         {
-          if (_context.Comment == null)
-          {
-              return NotFound();
-          }
-            var comment = await _context.Comment.FindAsync(id);
-
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            return comment;
+            var data = _mapper.Map<List<Comment>>( commentRepo.getCommentsByFilmId(filmid));
+            return Ok(data);
         }
-
-        // PUT: api/Comments/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutComment(int id, Comment comment)
+        [HttpGet("checkCommentCurrentUser")]
+        public ActionResult<bool> checkCommentCurrentUser(int cmtId, string userId)
         {
-            if (id != comment.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(comment).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CommentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return commentRepo.checkCommentCurrentUser(cmtId, userId);
         }
 
-        // POST: api/Comments
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> CreateComment([FromForm] CommentDTO comment)
         {
-          if (_context.Comment == null)
-          {
-              return Problem("Entity set 'CinemasContext.Comment'  is null.");
-          }
-            _context.Comment.Add(comment);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
+            if (commentRepo.createComment(comment))
+            {
+                return Ok("Thêm thành công");
+            }
+            else return BadRequest("Them that bai");
         }
 
-        // DELETE: api/Comments/5
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteComment/{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
-            if (_context.Comment == null)
+            if (!commentRepo.deleteComment(id))
             {
-                return NotFound();
+                return BadRequest("Xóa không thành công");
             }
-            var comment = await _context.Comment.FindAsync(id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            _context.Comment.Remove(comment);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            else return Ok("Xóa thành công");
         }
 
-        private bool CommentExists(int id)
-        {
-            return (_context.Comment?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+       
     }
 }

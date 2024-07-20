@@ -7,6 +7,8 @@ namespace HKCCinemas.Interfaces
     {
         List<Film> GetAllFilms();
         List<Film> GetTop5Films();
+        List<Film> GetAllFilmByCategory(int cateId);
+        List<int> GetAllFilmByActor(int actorId);
         Film GetFilmById(int id);
         List<Film> GetNowShowingFilms();
         List<Film> GetUpcomingFilms();
@@ -15,5 +17,9 @@ namespace HKCCinemas.Interfaces
         Task<bool> UpdateFilmAsync(int id, FilmDTO film);
         bool DeleteFilm(int id);
         int CountFilm();
+
+        //search 
+        List<Film> GetAllFilmsByQuery(string query);
+
     }
 }

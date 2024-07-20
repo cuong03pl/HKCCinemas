@@ -33,6 +33,13 @@ namespace HKCCinemas.Controllers
             var data = _categoryRepo.GetAllCategoriesByFilmId(filmId);
             return Ok(data);
         }
+
+        [HttpGet("getAllCategoryIdByFilmId/{filmId}")]
+        public async Task<ActionResult<IEnumerable<int>>> getAllCategoryIdByFilmId(int filmId)
+        {
+            var data = _categoryRepo.GetAllCategoryIdsByFilmId(filmId);
+            return Ok(data);
+        }
         [HttpGet("getAllCategories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetAllCategory()
         {

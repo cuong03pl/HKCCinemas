@@ -7,5 +7,11 @@ namespace HKCCinemas.Models
     {
         [Required(ErrorMessage = "Vui lòng nhập tên người dùng.")]
         public override string UserName { get; set; }
+
+        public string? Avatar { get; set; }
+
+        public ICollection<BookingUser> BookingUsers { get; set; }
+
+
     }
 }

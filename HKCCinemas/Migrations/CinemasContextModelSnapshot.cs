@@ -42,6 +42,56 @@ namespace HKCCinemas.Migrations
                     b.ToTable("Actor");
                 });
 
+            modelBuilder.Entity("HKCCinemas.Models.BookingDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("BookingUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingUserId");
+
+                    b.HasIndex("SeatId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("BookingDetails");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.BookingUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookingUsers");
+                });
+
             modelBuilder.Entity("HKCCinemas.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -86,6 +136,12 @@ namespace HKCCinemas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Background")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CinemasCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,7 +151,29 @@ namespace HKCCinemas.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CinemasCategoryId");
+
                     b.ToTable("Cinemas");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.CinemasCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CinemasCategories");
                 });
 
             modelBuilder.Entity("HKCCinemas.Models.Comment", b =>
@@ -129,6 +207,30 @@ namespace HKCCinemas.Migrations
                     b.ToTable("Comment");
                 });
 
+            modelBuilder.Entity("HKCCinemas.Models.Favourite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("FilmId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmId");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Favourites");
+                });
+
             modelBuilder.Entity("HKCCinemas.Models.Film", b =>
                 {
                     b.Property<int>("Id")
@@ -139,6 +241,9 @@ namespace HKCCinemas.Migrations
 
                     b.Property<int>("AgeLimit")
                         .HasColumnType("int");
+
+                    b.Property<string>("Background")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -195,7 +300,7 @@ namespace HKCCinemas.Migrations
                     b.ToTable("FilmActors");
                 });
 
-            modelBuilder.Entity("HKCCinemas.Models.ShowTimes", b =>
+            modelBuilder.Entity("HKCCinemas.Models.Room", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,24 +311,18 @@ namespace HKCCinemas.Migrations
                     b.Property<int>("CinemasId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FilmId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TimeId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CinemasId");
 
-                    b.HasIndex("FilmId");
-
-                    b.HasIndex("TimeId");
-
-                    b.ToTable("ShowTime");
+                    b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("HKCCinemas.Models.Time", b =>
+            modelBuilder.Entity("HKCCinemas.Models.Schedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -231,12 +330,125 @@ namespace HKCCinemas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("TimeValue")
+                    b.Property<int>("CinemasId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("FilmId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShowDateId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CinemasId");
+
+                    b.HasIndex("FilmId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("ShowDateId");
+
+                    b.ToTable("Schedules");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Seat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoomID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomID");
+
+                    b.ToTable("Seats");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.SeatStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.HasIndex("SeatId");
+
+                    b.ToTable("SeatStatuses");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.ShowDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CinemasId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Time");
+                    b.HasIndex("CinemasId");
+
+                    b.ToTable("ShowDates");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("HKCCinemas.Models.Trailer", b =>
@@ -268,6 +480,9 @@ namespace HKCCinemas.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -460,6 +675,40 @@ namespace HKCCinemas.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HKCCinemas.Models.BookingDetail", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.BookingUser", null)
+                        .WithMany("BookingDetails")
+                        .HasForeignKey("BookingUserId");
+
+                    b.HasOne("HKCCinemas.Models.Seat", "Seat")
+                        .WithMany("BookingDetails")
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HKCCinemas.Models.Ticket", "Ticket")
+                        .WithMany("BookingDetails")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Seat");
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.BookingUser", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.User", "User")
+                        .WithMany("BookingUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HKCCinemas.Models.CategoryFilm", b =>
                 {
                     b.HasOne("HKCCinemas.Models.Category", "Category")
@@ -479,10 +728,40 @@ namespace HKCCinemas.Migrations
                     b.Navigation("Film");
                 });
 
+            modelBuilder.Entity("HKCCinemas.Models.Cinemas", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.CinemasCategory", "CinemasCategory")
+                        .WithMany()
+                        .HasForeignKey("CinemasCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CinemasCategory");
+                });
+
             modelBuilder.Entity("HKCCinemas.Models.Comment", b =>
                 {
                     b.HasOne("HKCCinemas.Models.Film", "Film")
                         .WithMany("comments")
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HKCCinemas.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Film");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Favourite", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.Film", "Film")
+                        .WithMany()
                         .HasForeignKey("FilmId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -517,31 +796,102 @@ namespace HKCCinemas.Migrations
                     b.Navigation("Film");
                 });
 
-            modelBuilder.Entity("HKCCinemas.Models.ShowTimes", b =>
+            modelBuilder.Entity("HKCCinemas.Models.Room", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.Cinemas", "Cinemas")
+                        .WithMany("Rooms")
+                        .HasForeignKey("CinemasId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cinemas");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Schedule", b =>
                 {
                     b.HasOne("HKCCinemas.Models.Cinemas", "Cinemas")
                         .WithMany()
                         .HasForeignKey("CinemasId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HKCCinemas.Models.Film", "Film")
                         .WithMany()
                         .HasForeignKey("FilmId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HKCCinemas.Models.Time", "Time")
+                    b.HasOne("HKCCinemas.Models.Room", "Room")
                         .WithMany()
-                        .HasForeignKey("TimeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HKCCinemas.Models.ShowDate", "ShowDate")
+                        .WithMany()
+                        .HasForeignKey("ShowDateId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cinemas");
 
                     b.Navigation("Film");
 
-                    b.Navigation("Time");
+                    b.Navigation("Room");
+
+                    b.Navigation("ShowDate");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Seat", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.Room", "Room")
+                        .WithMany("Seats")
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.SeatStatus", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.Schedule", "Schedule")
+                        .WithMany("SeatStatuses")
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HKCCinemas.Models.Seat", "Seat")
+                        .WithMany("SeatStatuses")
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Schedule");
+
+                    b.Navigation("Seat");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.ShowDate", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.Cinemas", "Cinemas")
+                        .WithMany("ShowDates")
+                        .HasForeignKey("CinemasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cinemas");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Ticket", b =>
+                {
+                    b.HasOne("HKCCinemas.Models.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("HKCCinemas.Models.Trailer", b =>
@@ -611,9 +961,21 @@ namespace HKCCinemas.Migrations
                     b.Navigation("filmActors");
                 });
 
+            modelBuilder.Entity("HKCCinemas.Models.BookingUser", b =>
+                {
+                    b.Navigation("BookingDetails");
+                });
+
             modelBuilder.Entity("HKCCinemas.Models.Category", b =>
                 {
                     b.Navigation("categoryFilms");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Cinemas", b =>
+                {
+                    b.Navigation("Rooms");
+
+                    b.Navigation("ShowDates");
                 });
 
             modelBuilder.Entity("HKCCinemas.Models.Film", b =>
@@ -625,6 +987,33 @@ namespace HKCCinemas.Migrations
                     b.Navigation("filmActors");
 
                     b.Navigation("trailer");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Room", b =>
+                {
+                    b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Schedule", b =>
+                {
+                    b.Navigation("SeatStatuses");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Seat", b =>
+                {
+                    b.Navigation("BookingDetails");
+
+                    b.Navigation("SeatStatuses");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.Ticket", b =>
+                {
+                    b.Navigation("BookingDetails");
+                });
+
+            modelBuilder.Entity("HKCCinemas.Models.User", b =>
+                {
+                    b.Navigation("BookingUsers");
                 });
 #pragma warning restore 612, 618
         }

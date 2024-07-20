@@ -68,7 +68,19 @@ namespace HKCCinemas.Repo
 
                 film.Image = pathToSave;
             }
+            if (film.formFileBackground != null)
+            {
+                var fileName = film.formFileBackground.FileName;
+                var webPath = _evn.WebRootPath;
+                var path = Path.Combine("", webPath + @"\Images\" + fileName);
+                var pathToSave = @"/Images/" + fileName;
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await film.formFileBackground.CopyToAsync(stream);
+                }
 
+                film.Background = pathToSave;
+            }
             var filmMapper = _mapper.Map<Film>(film);
             foreach (var item in film.categoryIds)
             {
@@ -120,6 +132,24 @@ namespace HKCCinemas.Repo
                 {
                     film.Image = filmNow.Image;
                 }
+
+                if (film.formFileBackground != null && film.formFileBackground.Length > 0)
+                {
+                    var fileName2 = film.formFileBackground.FileName;
+                    var webPath2 = _evn.WebRootPath;
+                    var path2 = Path.Combine("", webPath2 + @"\Images\" + fileName2);
+                    var pathToSave2 = @"/Images/" + fileName2;
+                    using (var stream = new FileStream(path2, FileMode.Create))
+                    {
+                        await film.formFileBackground.CopyToAsync(stream);
+                    }
+
+                    film.Background = pathToSave2;
+                }
+                else
+                {
+                    film.Background = filmNow.Background;
+                }
                 filmNow.Title = film.Title;
                 filmNow.Detail = film.Detail;
                 filmNow.Synopsis = film.Synopsis;
@@ -131,6 +161,7 @@ namespace HKCCinemas.Repo
                 filmNow.EndDate = film.EndDate;
                 filmNow.Director = film.Director;
                 filmNow.Image = film.Image;
+                filmNow.Background = film.Background;
                 // xóa các categoryFilm cũ
                 if (film.categoryIds != null)
                 {
@@ -161,7 +192,25 @@ namespace HKCCinemas.Repo
             {
                 return false;
             }
-            
         }
+
+        public List<Film> GetAllFilmsByQuery(string query)
+        {
+            var data = _context.Film.Where(f => f.Title.Contains(query)).ToList();
+            return data;
+        }
+
+        public List<Film> GetAllFilmByCategory(int cateId)
+        {
+            var data = _context.CategoryFilm.Where(c => c.CategoryId == cateId).Select(c => c.Film).ToList();
+            return data;
+        }
+
+        public List<int> GetAllFilmByActor(int actorId)
+        {
+            var data = _context.FilmActors.Where(c => c.actorId == actorId).Select(c => c.Film.Id).ToList();
+            return data;
+        }
+
     }
 }

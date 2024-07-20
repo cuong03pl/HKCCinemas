@@ -44,6 +44,32 @@ namespace HKCCinemas.Controllers
             return Ok(data);
 
         }
+
+        
+        [HttpGet("search/{q}")]
+        public async Task<ActionResult<IEnumerable<Film>>> GetAllFilmByQuery(string q)
+        {
+            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetAllFilmsByQuery(q));
+            return Ok(data);
+
+        }
+
+        [HttpGet("GetAllFilmByCategory/{id}")]
+        public async Task<ActionResult<IEnumerable<Film>>> GetAllFilmByCategory(int id)
+        {
+            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetAllFilmByCategory(id));
+            return Ok(data);
+
+        }
+
+        [HttpGet("GetAllFilmByActor/{actorId}")]
+        public async Task<ActionResult<IEnumerable<int>>> GetAllFilmByActor(int actorId)
+        {
+            var data = _filmRepo.GetAllFilmByActor(actorId);
+            return Ok(data);
+
+        }
+
         // GET: api/Films/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Film>> GetFilm(int id)
@@ -65,7 +91,14 @@ namespace HKCCinemas.Controllers
             var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetUpcomingFilms());
             return Ok(data);
         }
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> CountFilm()
+        {
+            var data = _filmRepo.CountFilm();
+            return Ok(data);
+        }
 
+        
         [HttpGet("getSimilarFilm/{categoryId}")]
         public async Task<ActionResult<Film>> GetSimilarFilms(int categoryId)
         {
