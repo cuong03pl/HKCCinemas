@@ -75,5 +75,10 @@ namespace HKCCinemas.Repo
 
             return categories;
         }
+
+        public List<Category> SearchCategory(string keyword)
+        {
+            return _context.Category.Where(c => c.Name.Contains(keyword)).ToList();
+        }
     }
 }

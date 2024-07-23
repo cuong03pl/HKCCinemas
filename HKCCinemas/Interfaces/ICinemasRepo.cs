@@ -12,5 +12,7 @@ namespace HKCCinemas.Interfaces
         Task<bool> UpdateCinemas(int id, CinemasDTO cinemas);
         bool DeleteCinemas(int id);
         int CountCinemas();
+        List<Cinemas> SearchCinemas(string keyword);
+
     }
 }

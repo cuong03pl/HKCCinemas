@@ -79,7 +79,10 @@ namespace HKCCinemas.Repo
             return _context.Cinemas.Where(c => c.Id == id).FirstOrDefault();
         }
 
-
+        public List<Cinemas> SearchCinemas(string keyword)
+        {
+            return _context.Cinemas.Where(c => c.Name.Contains(keyword)).ToList();
+        }
 
         public async Task<bool> UpdateCinemas(int id, CinemasDTO cinemas)
         {

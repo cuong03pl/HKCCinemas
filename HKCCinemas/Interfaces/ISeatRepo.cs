@@ -13,5 +13,7 @@ namespace HKCCinemas.Interfaces
         bool UpdateSeat(int seatId, SeatDTO seat);
         bool DeleteSeat(int seatId);
         bool isAvailable (int seatId, int scheduleId);
+        List<SeatViewDTO> Search(string keyword);
+
     }
 }

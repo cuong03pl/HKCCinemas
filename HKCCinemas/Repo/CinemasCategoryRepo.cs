@@ -57,6 +57,11 @@ namespace HKCCinemas.Repo
             return _context.CinemasCategories.Where(cc => cc.Id == id).FirstOrDefault();
         }
 
+        public List<CinemasCategory> Search(string keyword)
+        {
+            return _context.CinemasCategories.Where(c => c.Name.Contains(keyword)).ToList();
+        }
+
         public async Task<bool> UpdateCategoryCinemas(int id, CinemasCategoryDTO category)
         {
             var categoryNow = _context.CinemasCategories.Where(cc => cc.Id == id).FirstOrDefault();

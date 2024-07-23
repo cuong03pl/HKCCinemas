@@ -14,5 +14,8 @@ namespace HKCCinemas.Interfaces
         bool CreateSchedule(ScheduleDTO schedule);
         bool UpdateSchedule(int scheduleId, ScheduleDTO schedule);
         bool DeleteSchedule(int scheduleId);
+
+        List<ScheduleViewDTO> Search(string keyword);
+
     }
 }

@@ -59,5 +59,10 @@ namespace HKCCinemas.Repo
             _context.SaveChanges();
             return true;
         }
+
+        public List<Trailer> Search(string keyword)
+        {
+            return _context.Trailers.Where(t => t.Film.Title.Contains(keyword)).ToList();
+        }
     }
 }

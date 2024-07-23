@@ -78,6 +78,14 @@ namespace HKCCinemas.Controllers
             else return BadRequest();
         }
 
-        
+
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> SearchCategory(string keyword)
+        {
+            var data = _cinemasCategoryRepo.Search(keyword);
+            return Ok(data);
+
+        }
+
     }
 }

@@ -126,5 +126,11 @@ namespace HKCCinemas.Repo
 
             return true;
         }
+
+        public List<Actor> SearchActor(string keyword)
+        {
+            var data = _context.Actor.Where(a => a.Name.Contains(keyword));
+            return data.ToList();
+        }
     }
 }

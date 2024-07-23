@@ -11,5 +11,7 @@ namespace HKCCinemas.Interfaces
         Task<bool> UpdateActorAsync(int id, ActorDTO actor);
         bool DeleteActor(int id);
         int CountActor();
+
+        List<Actor> SearchActor(string keyword);
     }
 }

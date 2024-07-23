@@ -9,6 +9,7 @@ using HKCCinemas.Models;
 using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using AutoMapper;
+using HKCCinemas.Repo;
 
 namespace HKCCinemas.Controllers
 {
@@ -95,7 +96,13 @@ namespace HKCCinemas.Controllers
             else return Ok(false);
         }
 
-        
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var data = _roomRepo.Search(keyword);
+            return Ok(data);
+
+        }
 
     }
 }

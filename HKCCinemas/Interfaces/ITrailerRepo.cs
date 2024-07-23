@@ -10,5 +10,7 @@ namespace HKCCinemas.Interfaces
         Task<bool> CreateTrailerAsync(TrailerDTO trailer);
         Task<bool> UpdateTrailerAsync(int id, TrailerDTO trailer);
         bool DeleteTrailer(int trailer_id);
+        List<Trailer> Search(string keyword);
+
     }
 }

@@ -13,5 +13,7 @@ namespace HKCCinemas.Interfaces
         bool UpdateCategory(int id, CategoryDTO category);
         bool DeleteCategory(int id);
         int CountCategory();
+
+        List<Category> SearchCategory(string keyword);
     }
 }

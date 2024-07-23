@@ -10,5 +10,7 @@ namespace HKCCinemas.Interfaces
         bool createComment(CommentDTO comment);
         bool checkCommentCurrentUser(int cmtId, string userId);
         bool deleteComment(int cmtId);
+
+        List<Comment> Search(string keyword);
     }
 }

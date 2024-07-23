@@ -11,5 +11,7 @@ namespace HKCCinemas.Interfaces
         bool CreateTicket(TicketDTO ticket);
         bool UpdateTicket(int ticketId, TicketDTO ticket);
         bool DeleteTicket(int ticketId);
+        List<TicketViewDTO> Search(string keyword);
+
     }
 }

@@ -51,6 +51,9 @@ namespace HKCCinemas.Repo
             return _context.Comment.Where(c => c.FilmId == filmId).ToList();
         }
 
-        
+        public List<Comment> Search(string keyword)
+        {
+            return _context.Comment.Where(c => c.Film.Title.Contains(keyword)).ToList();
+        }
     }
 }

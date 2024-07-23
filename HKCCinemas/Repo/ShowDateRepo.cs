@@ -46,6 +46,11 @@ namespace HKCCinemas.Repo
 
         }
 
+        public List<ShowDate> Search(string keyword)
+        {
+            return _context.ShowDates.Where(s => s.Cinemas.Name.Contains(keyword)).ToList();
+        }
+
         public bool UpdateShowDate(int showdateId, ShowDateDTO showdate)
         {
             var showdateNow = GetShowDateById(showdateId);

@@ -82,6 +82,13 @@ namespace HKCCinemas.Controllers
             else return BadRequest();
         }
 
-       
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var data = _actorRepo.SearchActor(keyword);
+            return Ok(data);
+           
+        }
+
     }
 }

@@ -65,6 +65,12 @@ namespace HKCCinemas.Controllers
             else return Ok("Xóa thành công");
         }
 
-       
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var data = commentRepo.Search(keyword);
+            return Ok(data);
+
+        }
     }
 }

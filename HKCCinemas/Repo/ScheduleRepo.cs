@@ -113,5 +113,20 @@ namespace HKCCinemas.Repo
             _context.SaveChanges();
             return true;
         }
+
+        public List<ScheduleViewDTO> Search(string keyword)
+        {
+            var data = _context.Schedules.Include(s => s.Film).Include(s => s.Cinemas).Where(s => s.Film.Title.Contains(keyword)).Select(s => new ScheduleViewDTO
+            {
+                Id = s.Id,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
+                Film = _mapper.Map<FilmDTO>(s.Film),
+                Room = _mapper.Map<RoomDTO>(s.Room),
+                ShowDate = _mapper.Map<ShowDateDTO>(s.ShowDate),
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+            }).ToList();
+            return data;
+        }
     }
 }

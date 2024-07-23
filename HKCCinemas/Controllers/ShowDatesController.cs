@@ -85,6 +85,13 @@ namespace HKCCinemas.Controllers
             else return BadRequest("Xóa thất bại");
         }
 
-       
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var data = _showDateRepo.Search(keyword);
+            return Ok(data);
+
+        }
+
     }
 }

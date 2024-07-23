@@ -63,6 +63,24 @@ namespace HKCCinemas.Repo
            
         }
 
+        public List<TicketViewDTO> Search(string keyword)
+        {
+            return _context.Tickets.
+                Include(t => t.Schedule).ThenInclude(s => s.Cinemas).
+                Include(t => t.Schedule).ThenInclude(t => t.Film).
+                Include(t => t.Schedule).ThenInclude(t => t.ShowDate).Select(t => new TicketViewDTO
+                {
+                    Id = t.Id,
+                    Price = t.Price,
+                    StartTime = t.Schedule.StartTime,
+                    EndTime = t.Schedule.EndTime,
+                    ShowDate = t.Schedule.ShowDate.Date,
+                    FilmName = t.Schedule.Film.Title,
+                    CinemasName = t.Schedule.Cinemas.Name,
+                    ScheduleId = t.Schedule.Id
+                }).Where(t => t.FilmName.Contains(keyword)).ToList();
+        }
+
         public bool UpdateTicket(int ticketId, TicketDTO ticket)
         {
             var ticketNow = GetTicketById(ticketId);

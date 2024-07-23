@@ -91,6 +91,17 @@ namespace HKCCinemas.Repo
             return seat.Any();
         }
 
+        public List<SeatViewDTO> Search(string keyword)
+        {
+            return _context.Seats.Include(s => s.Room).ThenInclude(r => r.Cinemas).Where(s => s.Room.Cinemas.Name.Contains(keyword)).Select(s => new SeatViewDTO
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Room.Cinemas),
+                Room = _mapper.Map<RoomDTO>(s.Room),
+            }).ToList();
+        }
+
         public bool UpdateSeat(int seatId, SeatDTO seat)
         {
             var seatNow = _context.Seats.Where(s => s.Id == seatId).FirstOrDefault();

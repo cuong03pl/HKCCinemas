@@ -45,6 +45,9 @@ namespace HKCCinemas.Repo
             return userManager.Users.Count();
         }
 
-        
+        public List<User> Search(string keyword)
+        {
+            return userManager.Users.Where(u => u.UserName.Contains(keyword)).ToList();
+        }
     }
 }

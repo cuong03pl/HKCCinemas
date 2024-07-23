@@ -61,5 +61,13 @@ namespace HKCCinemas.Controllers
             return BadRequest("Xóa người dùng thất bại ");
         }
 
+        [HttpGet("search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var data = _userRepo.Search(keyword);
+            return Ok(data);
+
+        }
+
     }
 }

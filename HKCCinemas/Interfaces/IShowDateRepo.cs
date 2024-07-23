@@ -12,5 +12,7 @@ namespace HKCCinemas.Interfaces
         bool CreateShowDate(ShowDateDTO showdate);
         bool UpdateShowDate(int showdateId, ShowDateDTO showdate);
         bool DeleteShowDate(int showdateId);
+        List<ShowDate> Search(string keyword);
+
     }
 }

@@ -13,6 +13,7 @@ namespace HKCCinemas.Interfaces
         bool deleteRoom(int id);
 
         bool isCinemaRoomOccupied(int cinemasId, int filmId, int roomId, int showDateId, TimeSpan startTime);
+        List<RoomViewDTO> Search(string keyword);
 
     }
 }

@@ -9,7 +9,7 @@ namespace HKCCinemas.Interfaces
         User GetUserByUserName(string username);
          Task<bool> DeleteUser(string id);
         int GetCountUser();
-        
+        List<User> Search(string keyword);
 
     }
 }

@@ -111,6 +111,15 @@ namespace HKCCinemas.Repo
             return temp > 0 ? true : false;
         }
 
-       
+        public List<RoomViewDTO> Search(string keyword)
+        {
+            return _context.Rooms.Include(r => r.Cinemas).Where(r => r.Cinemas.Name.Contains(keyword)).Select(r => new RoomViewDTO
+            {
+                Id = r.Id,
+                Cinemas = _mapper.Map<CinemasDTO>(r.Cinemas),
+                RoomName = r.RoomName,
+
+            }).ToList();
+        }
     }
 }

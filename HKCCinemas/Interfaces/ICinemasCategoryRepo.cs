@@ -10,5 +10,6 @@ namespace HKCCinemas.Interfaces
         Task<bool> CreateCinemasCategory(CinemasCategoryDTO category);
         bool DeleteCinemasCategory(int id);
         Task<bool> UpdateCategoryCinemas(int id, CinemasCategoryDTO category);
+        List<CinemasCategory> Search(string keyword);
     }
 }
