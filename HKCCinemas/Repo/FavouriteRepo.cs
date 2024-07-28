@@ -39,7 +39,10 @@ namespace HKCCinemas.Repo
         {
             return _context.Favourites.ToList();
         }
-
+        public int Count(string userId)
+        {
+            return _context.Favourites.Where(f => f.UserID == userId).Count();
+        }
         public List<FilmDTO> getFavouritesByUserId(string userId)
         {
            var data = _context.Favourites.Where(f => f.UserID == userId).Include(f => f.Film)

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HKCCinemas.Repo
 {
@@ -14,7 +16,10 @@ namespace HKCCinemas.Repo
             _context = context;
             _mapper = mapper;
         }
-
+        public int Count()
+        {
+            return _context.Comment.Count();
+        }
         public bool checkCommentCurrentUser(int cmtId, string userId)
         {
             var result = _context.Comment.Where(c => c.Id == cmtId && c.UserID == userId).ToList();
@@ -41,9 +46,17 @@ namespace HKCCinemas.Repo
             else { return false; }
         }
 
-        public List<Comment> GetComments()
+        public List<CommentViewDTO> GetComments()
         {
-            return _context.Comment.ToList();
+            return _context.Comment.Select(c => new CommentViewDTO
+            {
+                Id = c.Id,
+                Content = c.Content,
+                FilmId = c.FilmId,
+                UserID = c.UserID,
+                Time = c.Time,
+                Count = _context.Comment.Count()
+            }).ToList();
         }
 
         public List<Comment> getCommentsByFilmId(int filmId)
@@ -51,9 +64,23 @@ namespace HKCCinemas.Repo
             return _context.Comment.Where(c => c.FilmId == filmId).ToList();
         }
 
-        public List<Comment> Search(string keyword)
+        public List<CommentViewDTO> Search(QueryObject query)
         {
-            return _context.Comment.Where(c => c.Film.Title.Contains(keyword)).ToList();
+            var comments = _context.Comment.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                comments = comments.Where(c => c.User.UserName.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return comments.Select(c => new CommentViewDTO
+            {
+                Id = c.Id,
+                Content = c.Content,
+                FilmId = c.FilmId,
+                UserID = c.UserID,
+                Time = c.Time,
+                Count = comments.Count()
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
     }
 }

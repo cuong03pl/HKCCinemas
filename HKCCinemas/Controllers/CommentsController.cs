@@ -10,6 +10,7 @@ using HKCCinemas.Repo;
 using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using AutoMapper;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -27,10 +28,16 @@ namespace HKCCinemas.Controllers
             this.commentRepo = commentRepo;
             _mapper = mapper;
         }
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = commentRepo.Count();
+            return Ok(data);
+        }
         [HttpGet("GetAllComment")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllComment()
         {
-            var data = _mapper.Map<List<Comment>>(commentRepo.GetComments());
+            var data =commentRepo.GetComments();
             return Ok(data);
         }
         [HttpGet("/getcommentbyfilmid/{filmid}")]
@@ -65,10 +72,10 @@ namespace HKCCinemas.Controllers
             else return Ok("Xóa thành công");
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = commentRepo.Search(keyword);
+            var data = commentRepo.Search(query);
             return Ok(data);
 
         }

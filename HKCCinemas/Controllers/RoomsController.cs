@@ -10,6 +10,7 @@ using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using AutoMapper;
 using HKCCinemas.Repo;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -25,6 +26,13 @@ namespace HKCCinemas.Controllers
             _context = context;
             _roomRepo = roomRepo;
             _mapper = mapper;
+        }
+
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _roomRepo.Count();
+            return Ok(data);
         }
 
         // GET: api/Rooms
@@ -96,10 +104,10 @@ namespace HKCCinemas.Controllers
             else return Ok(false);
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = _roomRepo.Search(keyword);
+            var data = _roomRepo.Search(query);
             return Ok(data);
 
         }

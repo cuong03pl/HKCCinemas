@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace HKCCinemas.Repo
 {
@@ -18,7 +20,7 @@ namespace HKCCinemas.Repo
             _mapper = mapper;
             _evn = evn;
         }
-        public int CountActor()
+        public int Count()
         {
             return _context.Actor.Count();
         }
@@ -74,9 +76,15 @@ namespace HKCCinemas.Repo
             var actorDtos = film.filmActors.Select(f => f.Actor).ToList();
             return actorDtos;
         }
-        public List<Actor> GetAllActors()
+        public List<ActorViewDTO> GetAllActors()
         {
-           return _context.Actor.ToList();
+            return _context.Actor.Select(a => new ActorViewDTO
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Image = a.Image,
+                Count = _context.Actor.Count()
+            }).ToList();
         }
         public async Task<bool> UpdateActorAsync(int id, ActorDTO actor)
         {
@@ -127,10 +135,21 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<Actor> SearchActor(string keyword)
+        public List<ActorViewDTO> SearchActor(QueryObject query)
         {
-            var data = _context.Actor.Where(a => a.Name.Contains(keyword));
-            return data.ToList();
+            var actors = _context.Actor.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                actors = actors.Where(a => a.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return actors.Select(a => new ActorViewDTO
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Image = a.Image,
+                Count = actors.Count(),
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
     }
 }

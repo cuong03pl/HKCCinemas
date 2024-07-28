@@ -5,5 +5,7 @@
         public int Id { get; set; }
         public string RoomName { get; set; }
         public CinemasDTO Cinemas { get; set; }
+        public int Count { get; set; } = 0;
+
     }
 }

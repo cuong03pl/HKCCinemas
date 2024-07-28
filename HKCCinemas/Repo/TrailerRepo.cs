@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HKCCinemas.Repo
 {
@@ -17,10 +20,20 @@ namespace HKCCinemas.Repo
             _evn = evn;
         }
 
-        // get
-        public List<Trailer> GetAllTrailer()
+        public int Count()
         {
-            return _context.Trailers.ToList();
+            return _context.Trailers.Count();
+        }
+        // get
+        public List<TrailerViewDTO> GetAllTrailer()
+        {
+            return _context.Trailers.Select(t => new TrailerViewDTO
+            {
+                Count = _context.Trailers.Count(),
+                FilmId = t.FilmId,
+                Id = t.Id,
+                Link = t.Link,
+            }).ToList();
         }
         public List<Trailer> GetAllTrailerByFilmId(int film_id)
         {
@@ -60,9 +73,21 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<Trailer> Search(string keyword)
+        public List<TrailerViewDTO> Search(QueryObject query)
         {
-            return _context.Trailers.Where(t => t.Film.Title.Contains(keyword)).ToList();
+            var trailers = _context.Trailers.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                trailers = trailers.Where(c => c.Film.Title.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return trailers.Select(t => new TrailerViewDTO
+            {
+                Count = trailers.Count(),
+                FilmId = t.FilmId,
+                Id = t.Id,
+                Link = t.Link,
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
     }
 }

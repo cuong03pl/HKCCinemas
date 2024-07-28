@@ -10,6 +10,7 @@ using AutoMapper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using HKCCinemas.Repo;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -25,6 +26,12 @@ namespace HKCCinemas.Controllers
             _context = context;
             _categoryRepo = categoryRepo;
             _mapper = mapper;
+        }
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _categoryRepo.Count();
+            return Ok(data);
         }
 
         // GET: api/Categories
@@ -58,7 +65,7 @@ namespace HKCCinemas.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, [FromForm] CategoryDTO category)
+        public async Task<IActionResult> PutCategory(int id, [FromForm] CategoryViewDTO category)
         {
             if(_categoryRepo.UpdateCategory(id, category))
             {
@@ -70,7 +77,7 @@ namespace HKCCinemas.Controllers
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory( [FromForm] CategoryDTO category)
+        public async Task<ActionResult<Category>> PostCategory( [FromForm] CategoryViewDTO category)
         {
             if (_categoryRepo.CreateCategory(category))
             {
@@ -91,10 +98,10 @@ namespace HKCCinemas.Controllers
         }
 
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> SearchCategory(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCategory([FromQuery] QueryObject query)
         {
-            var data = _categoryRepo.SearchCategory(keyword);
+            var data = _categoryRepo.SearchCategory(query);
             return Ok(data);
 
         }

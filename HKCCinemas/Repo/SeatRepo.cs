@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HKCCinemas.Repo
 {
@@ -15,6 +17,11 @@ namespace HKCCinemas.Repo
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public int Count()
+        {
+            return _context.Seats.Count();
         }
         public bool CreateSeat(SeatDTO seat)
         {
@@ -41,6 +48,7 @@ namespace HKCCinemas.Repo
                 Name = s.Name,
                 Cinemas= _mapper.Map<CinemasDTO>(s.Room.Cinemas),
                 Room= _mapper.Map<RoomDTO>(s.Room),
+                Count= _context.Seats.Count()
             }).ToList();
         }
 
@@ -91,15 +99,23 @@ namespace HKCCinemas.Repo
             return seat.Any();
         }
 
-        public List<SeatViewDTO> Search(string keyword)
+        public List<SeatViewDTO> Search(QueryObject query)
         {
-            return _context.Seats.Include(s => s.Room).ThenInclude(r => r.Cinemas).Where(s => s.Room.Cinemas.Name.Contains(keyword)).Select(s => new SeatViewDTO
+
+            var seats = _context.Seats.Include(s => s.Room).ThenInclude(r => r.Cinemas).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                seats = seats.Where(c => c.Room.Cinemas.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return seats.Select(s => new SeatViewDTO
             {
                 Id = s.Id,
                 Name = s.Name,
                 Cinemas = _mapper.Map<CinemasDTO>(s.Room.Cinemas),
                 Room = _mapper.Map<RoomDTO>(s.Room),
-            }).ToList();
+                Count = seats.Count(),
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
 
         public bool UpdateSeat(int seatId, SeatDTO seat)

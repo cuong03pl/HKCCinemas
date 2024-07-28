@@ -10,6 +10,7 @@ using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using AutoMapper;
 using HKCCinemas.Repo;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -27,6 +28,13 @@ namespace HKCCinemas.Controllers
             _context = context;
             _seatRepo = seatRepo;
             _mapper = mapper;
+        }
+
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _seatRepo.Count();
+            return Ok(data);
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SeatViewDTO>>> GetSeats()
@@ -99,10 +107,10 @@ namespace HKCCinemas.Controllers
             else return Ok(false);
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = _seatRepo.Search(keyword);
+            var data = _seatRepo.Search(query);
             return Ok(data);
 
         }

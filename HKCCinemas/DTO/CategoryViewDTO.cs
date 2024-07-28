@@ -1,13 +1,9 @@
 ﻿namespace HKCCinemas.DTO
 {
-    public class SeatViewDTO
+    public class CategoryViewDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Status { get; set; }
-        public RoomDTO Room { get; set; }
-        public CinemasDTO Cinemas { get; set; }
         public int Count { get; set; } = 0;
-
     }
 }

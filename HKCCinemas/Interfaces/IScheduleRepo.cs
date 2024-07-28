@@ -1,4 +1,5 @@
 ﻿using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
@@ -14,8 +15,8 @@ namespace HKCCinemas.Interfaces
         bool CreateSchedule(ScheduleDTO schedule);
         bool UpdateSchedule(int scheduleId, ScheduleDTO schedule);
         bool DeleteSchedule(int scheduleId);
-
-        List<ScheduleViewDTO> Search(string keyword);
+        int Count();
+        List<ScheduleViewDTO> Search(QueryObject query);
 
     }
 }

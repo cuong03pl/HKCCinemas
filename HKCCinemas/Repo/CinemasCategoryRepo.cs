@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace HKCCinemas.Repo
 {
@@ -17,7 +19,10 @@ namespace HKCCinemas.Repo
             _mapper = mapper;
             _evn = evn;
         }
-
+        public int Count()
+        {
+            return _context.CinemasCategories.Count();
+        }
         public async Task<bool> CreateCinemasCategory(CinemasCategoryDTO category)
         {
             if(category.formFile != null) {
@@ -47,9 +52,15 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<CinemasCategory> GetCinemasCategories()
+        public List<CinemasCategoryViewDTO> GetCinemasCategories()
         {
-            return _context.CinemasCategories.ToList();
+            return _context.CinemasCategories.Select(cc => new CinemasCategoryViewDTO
+            {
+                Id = cc.Id,
+                Name = cc.Name,
+                Count = _context.CinemasCategories.Count(),
+                Image = cc.Image,
+            }).ToList();
         }
 
         public CinemasCategory GetCinemasCategory(int id)
@@ -57,9 +68,21 @@ namespace HKCCinemas.Repo
             return _context.CinemasCategories.Where(cc => cc.Id == id).FirstOrDefault();
         }
 
-        public List<CinemasCategory> Search(string keyword)
+        public List<CinemasCategoryViewDTO> Search(QueryObject query)
         {
-            return _context.CinemasCategories.Where(c => c.Name.Contains(keyword)).ToList();
+            var cinemasCategories = _context.CinemasCategories.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                cinemasCategories = cinemasCategories.Where(a => a.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return cinemasCategories.Select(cc => new CinemasCategoryViewDTO
+            {
+                Id = cc.Id,
+                Name = cc.Name,
+                Count = cinemasCategories.Count(),
+                Image = cc.Image,
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
 
         public async Task<bool> UpdateCategoryCinemas(int id, CinemasCategoryDTO category)

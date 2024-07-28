@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +21,30 @@ namespace HKCCinemas.Repo
         }
         
         // get
-        public int CountFilm()
+        public int Count()
         {
             return _context.Film.Count();
         }
-        public List<Film> GetAllFilms()
+        public List<FilmViewDTO> GetAllFilms()
         {
-            return _context.Film.ToList();
+            return _context.Film.Select(f => new FilmViewDTO
+            {
+                Id = f.Id,
+                Title = f.Title,
+                AgeLimit = f.AgeLimit,
+                Background = f.Background,
+                Count = _context.Film.Count(),
+                Country = f.Country,
+                Detail = f.Detail,
+                Director = f.Director,
+                Duration = f.Duration,
+                EndDate = f.EndDate,
+                Image = f.Image,
+                Rating = f.Rating,
+                ReleaseDate = f.ReleaseDate,
+                Synopsis = f.Synopsis
+                
+            }).ToList();
         }
         public List<Film> GetTop5Films()
         {
@@ -194,10 +212,31 @@ namespace HKCCinemas.Repo
             }
         }
 
-        public List<Film> GetAllFilmsByQuery(string query)
+        public List<FilmViewDTO> GetAllFilmsByQuery(QueryObject query)
         {
-            var data = _context.Film.Where(f => f.Title.Contains(query)).ToList();
-            return data;
+            var films = _context.Film.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                films = films.Where(c => c.Title.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return films.Select(f => new FilmViewDTO
+            {
+                Id = f.Id,
+                Title = f.Title,
+                AgeLimit = f.AgeLimit,
+                Background = f.Background,
+                Count = films.Count(),
+                Country = f.Country,
+                Detail = f.Detail,
+                Director = f.Director,
+                Duration = f.Duration,
+                EndDate = f.EndDate,
+                Image = f.Image,
+                Rating = f.Rating,
+                ReleaseDate = f.ReleaseDate,
+                Synopsis = f.Synopsis
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
 
         public List<Film> GetAllFilmByCategory(int cateId)
@@ -211,6 +250,7 @@ namespace HKCCinemas.Repo
             var data = _context.FilmActors.Where(c => c.actorId == actorId).Select(c => c.Film.Id).ToList();
             return data;
         }
+
 
     }
 }

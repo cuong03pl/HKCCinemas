@@ -1,11 +1,12 @@
 ﻿using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
 {
     public interface IFilmRepo
     {
-        List<Film> GetAllFilms();
+        List<FilmViewDTO> GetAllFilms();
         List<Film> GetTop5Films();
         List<Film> GetAllFilmByCategory(int cateId);
         List<int> GetAllFilmByActor(int actorId);
@@ -16,10 +17,12 @@ namespace HKCCinemas.Interfaces
         Task<bool> CreateFilmAsync(FilmDTO film);
         Task<bool> UpdateFilmAsync(int id, FilmDTO film);
         bool DeleteFilm(int id);
-        int CountFilm();
+        int Count();
 
         //search 
-        List<Film> GetAllFilmsByQuery(string query);
+        List<FilmViewDTO> GetAllFilmsByQuery(QueryObject query);
+
+
 
     }
 }

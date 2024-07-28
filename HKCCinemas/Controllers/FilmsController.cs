@@ -10,6 +10,7 @@ using HKCCinemas.Repo;
 using HKCCinemas.Interfaces;
 using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -27,12 +28,14 @@ namespace HKCCinemas.Controllers
             _filmRepo = filmRepo;
             _mapper = mapper;
         }
-        // get
+
+        
+
         // GET: api/Films
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Film>>> GetAllFilms()
         {
-            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetAllFilms());
+            var data = _filmRepo.GetAllFilms();
             return Ok(data);
 
         }
@@ -46,10 +49,10 @@ namespace HKCCinemas.Controllers
         }
 
         
-        [HttpGet("search/{q}")]
-        public async Task<ActionResult<IEnumerable<Film>>> GetAllFilmByQuery(string q)
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Film>>> GetAllFilmByQuery([FromQuery] QueryObject query)
         {
-            var data = _mapper.Map<List<FilmDTO>>(_filmRepo.GetAllFilmsByQuery(q));
+            var data = _filmRepo.GetAllFilmsByQuery(query);
             return Ok(data);
 
         }
@@ -92,9 +95,9 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
         [HttpGet("getCount")]
-        public async Task<ActionResult<int>> CountFilm()
+        public async Task<ActionResult<int>> Count()
         {
-            var data = _filmRepo.CountFilm();
+            var data = _filmRepo.Count();
             return Ok(data);
         }
 

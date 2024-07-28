@@ -10,5 +10,7 @@ namespace HKCCinemas.Interfaces
         bool createFavourite(FavouriteDTO comment);
         bool deleteFavourite(int filmId, string userId);
         bool isFavourited (int filmId, string userId);
+
+        int Count(string userId);
     }
 }

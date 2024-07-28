@@ -2,6 +2,7 @@
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HKCCinemas.Repo
 {
@@ -23,6 +24,10 @@ namespace HKCCinemas.Repo
             this.configuration = configuration;
             this.signInManager = signInManager;
             this.randomAvatar = randomAvatar;
+        }
+        public int Count()
+        {
+            return roleManager.Roles.Count();
         }
         public async Task<bool> CreateRole(string roleName)
         {
@@ -53,6 +58,8 @@ namespace HKCCinemas.Repo
         {
             return roleManager.Roles.ToList();
         }
+
+        
 
         public async Task<IList<IdentityRole>> GetRolesByUser(string userId)
         {

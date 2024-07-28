@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HKCCinemas.Repo
 {
@@ -13,6 +16,10 @@ namespace HKCCinemas.Repo
         {
             _context = context;
             _mapper = mapper;
+        }
+        public int Count()
+        {
+            return _context.ShowDates.Count();
         }
         public bool CreateShowDate(ShowDateDTO showdate)
         {
@@ -30,9 +37,21 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<ShowDate> GetAllShowDate()
+        public List<ShowDateViewDTO> Search(QueryObject query)
         {
-           return _context.ShowDates.ToList();
+            var showDates = _context.ShowDates.Include(s => s.Cinemas).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                showDates = showDates.Where(a => a.Cinemas.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return showDates.Select(s => new ShowDateViewDTO
+            {
+                Id = s.Id,
+                Date = s.Date,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
+                Count = showDates.Count(),
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
 
         public List<ShowDate> GetAllShowDateByCinemasId(int cinemasId)
@@ -45,10 +64,16 @@ namespace HKCCinemas.Repo
             return _context.ShowDates.Where(sd => sd.Id == showdateId).FirstOrDefault();
 
         }
-
-        public List<ShowDate> Search(string keyword)
+        
+        public List<ShowDateViewDTO> GetAllShowDate()
         {
-            return _context.ShowDates.Where(s => s.Cinemas.Name.Contains(keyword)).ToList();
+            return _context.ShowDates.Include(s => s.Cinemas).Select(s => new ShowDateViewDTO
+            {
+                Id = s.Id,
+                Date = s.Date,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
+                Count = _context.ShowDates.Count(),
+            }).Skip(0).Take(5).ToList();
         }
 
         public bool UpdateShowDate(int showdateId, ShowDateDTO showdate)

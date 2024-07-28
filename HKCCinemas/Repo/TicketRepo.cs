@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,10 @@ namespace HKCCinemas.Repo
             _context = context;
             _mapper = mapper;
         }
-        
+        public int Count()
+        {
+            return _context.Tickets.Count();
+        }
         public bool CreateTicket(TicketDTO ticket)
         {
             var ticketMapper = _mapper.Map<Ticket>(ticket);
@@ -58,14 +62,21 @@ namespace HKCCinemas.Repo
                     ShowDate = t.Schedule.ShowDate.Date,
                     FilmName = t.Schedule.Film.Title,
                     CinemasName = t.Schedule.Cinemas.Name,
-                    ScheduleId = t.Schedule.Id
+                    ScheduleId = t.Schedule.Id,
+                    Count = _context.Tickets.Count()
+                    
                 }).ToList();
-           
         }
 
-        public List<TicketViewDTO> Search(string keyword)
+        public List<TicketViewDTO> Search(QueryObject query)
         {
-            return _context.Tickets.
+            var tickets = _context.Tickets.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                tickets = tickets.Where(c => c.Schedule.Film.Title.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return tickets.
                 Include(t => t.Schedule).ThenInclude(s => s.Cinemas).
                 Include(t => t.Schedule).ThenInclude(t => t.Film).
                 Include(t => t.Schedule).ThenInclude(t => t.ShowDate).Select(t => new TicketViewDTO
@@ -77,8 +88,9 @@ namespace HKCCinemas.Repo
                     ShowDate = t.Schedule.ShowDate.Date,
                     FilmName = t.Schedule.Film.Title,
                     CinemasName = t.Schedule.Cinemas.Name,
-                    ScheduleId = t.Schedule.Id
-                }).Where(t => t.FilmName.Contains(keyword)).ToList();
+                    ScheduleId = t.Schedule.Id,
+                    Count = tickets.Count(),
+                }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
 
         public bool UpdateTicket(int ticketId, TicketDTO ticket)

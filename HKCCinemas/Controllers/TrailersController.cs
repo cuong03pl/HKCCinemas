@@ -10,6 +10,7 @@ using HKCCinemas.DTO;
 using AutoMapper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Repo;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -28,11 +29,18 @@ namespace HKCCinemas.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _trailerRepo.Count();
+            return Ok(data);
+        }
+
         // GET: api/Trailers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TrailerDTO>>> GetAllTrailer()
         {
-            var data = _mapper.Map<List<TrailerDTO>>(_trailerRepo.GetAllTrailer());
+            var data = _trailerRepo.GetAllTrailer();
             return Ok(data);
         }
 
@@ -77,10 +85,10 @@ namespace HKCCinemas.Controllers
             else return BadRequest();
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = _trailerRepo.Search(keyword);
+            var data = _trailerRepo.Search(query);
             return Ok(data);
 
         }

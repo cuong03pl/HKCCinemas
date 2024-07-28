@@ -1,4 +1,5 @@
 ﻿using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
@@ -11,7 +12,9 @@ namespace HKCCinemas.Interfaces
         bool CreateTicket(TicketDTO ticket);
         bool UpdateTicket(int ticketId, TicketDTO ticket);
         bool DeleteTicket(int ticketId);
-        List<TicketViewDTO> Search(string keyword);
+        List<TicketViewDTO> Search(QueryObject query);
+        int Count();
+
 
     }
 }

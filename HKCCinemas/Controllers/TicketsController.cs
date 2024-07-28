@@ -9,6 +9,7 @@ using HKCCinemas.Models;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Repo;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -25,6 +26,13 @@ namespace HKCCinemas.Controllers
             _context = context;
             _ticketRepo = ticketRepo;
             _scheduleRepo = scheduleRepo;
+        }
+
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _ticketRepo.Count();
+            return Ok(data);
         }
 
         // GET: api/Tickets
@@ -87,10 +95,10 @@ namespace HKCCinemas.Controllers
             }
             else return BadRequest("Xóa thất bại");
         }
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = _ticketRepo.Search(keyword);
+            var data = _ticketRepo.Search(query);
 
             return Ok(data);
 

@@ -11,5 +11,7 @@ namespace HKCCinemas.DTO
         public CinemasDTO Cinemas { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
+        public int Count { get; set; } = 0;
+
     }
 }

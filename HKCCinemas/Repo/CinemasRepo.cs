@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace HKCCinemas.Repo
             _mapper = mapper;
             _evn = evn;
         }
-        public int CountCinemas()
+        public int Count()
         {
             return _context.Cinemas.Count();
         }
@@ -66,9 +67,19 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<Cinemas> GetAllCinemas()
+        public List<CinemasViewDTO> GetAllCinemas()
         {
-            return _context.Cinemas.ToList();
+            
+            return _context.Cinemas.Select(c => new CinemasViewDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Address = c.Address,
+                Image = c.Image,
+                Background = c.Background,
+                CinemasCategoryId = c.CinemasCategoryId,
+                Count = _context.Cinemas.Count()
+            }).ToList();
         }
         public List<Cinemas> GetCinemasByCategoryId(int categoryId)
         {
@@ -79,9 +90,26 @@ namespace HKCCinemas.Repo
             return _context.Cinemas.Where(c => c.Id == id).FirstOrDefault();
         }
 
-        public List<Cinemas> SearchCinemas(string keyword)
+        public List<CinemasViewDTO> SearchCinemas(QueryObject query)
         {
-            return _context.Cinemas.Where(c => c.Name.Contains(keyword)).ToList();
+
+            var cinemas = _context.Cinemas.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                cinemas = cinemas.Where(c => c.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            return cinemas.Select(c => new CinemasViewDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Address = c.Address,
+                Image = c.Image,
+                Background = c.Background,
+                CinemasCategoryId = c.CinemasCategoryId,
+                Count = cinemas.Count(),
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
 
         public async Task<bool> UpdateCinemas(int id, CinemasDTO cinemas)

@@ -10,6 +10,7 @@ using AutoMapper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using HKCCinemas.Repo;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -29,6 +30,12 @@ namespace HKCCinemas.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _scheduleRepo.Count();
+            return Ok(data);
+        }
         // GET: api/Schedules
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScheduleViewDTO>>> GetSchedules()
@@ -98,10 +105,10 @@ namespace HKCCinemas.Controllers
             else { return BadRequest("Xóa thất bại"); }
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = _scheduleRepo.Search(keyword);
+            var data = _scheduleRepo.Search(query);
             return Ok(data);
 
         }

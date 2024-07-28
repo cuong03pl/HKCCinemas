@@ -27,6 +27,12 @@ namespace HKCCinemas.Controllers
             this.favouriteRepo = favouriteRepo;
             _mapper = mapper;
         }
+        [HttpGet("getCount/{userId}")]
+        public async Task<ActionResult<int>> Count(string userId)
+        {
+            var data = favouriteRepo.Count(userId);
+            return Ok(data);
+        }
         [HttpGet("getAllFavourites")]
         public async Task<ActionResult<IEnumerable<FavouriteDTO>>> GetAllFavourites()
         {

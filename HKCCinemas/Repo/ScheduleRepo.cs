@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HKCCinemas.Repo
 {
@@ -14,6 +16,11 @@ namespace HKCCinemas.Repo
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public int Count()
+        {
+            return _context.Schedules.Count();
         }
         public bool CreateSchedule(ScheduleDTO schedule)
         {
@@ -38,15 +45,17 @@ namespace HKCCinemas.Repo
 
         public List<ScheduleViewDTO> GetAllSchedule()
         {
-           return _context.Schedules.Include(s => s.Film).Include(s => s.Cinemas).Include(s => s.Room).Select(s => new ScheduleViewDTO
-           {
-               Id= s.Id,
-               Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
-               Film = _mapper.Map<FilmDTO>(s.Film),
-               Room = _mapper.Map<RoomDTO>(s.Room),
-               ShowDate = _mapper.Map<ShowDateDTO>(s.ShowDate),
-               StartTime = s.StartTime, EndTime = s.EndTime,
-           }).ToList();
+            return _context.Schedules.Include(s => s.Film).Include(s => s.Cinemas).Include(s => s.Room).Select(s => new ScheduleViewDTO
+            {
+                Id = s.Id,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
+                Film = _mapper.Map<FilmDTO>(s.Film),
+                Room = _mapper.Map<RoomDTO>(s.Room),
+                ShowDate = _mapper.Map<ShowDateDTO>(s.ShowDate),
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                Count = _context.Schedules.Count()
+            }).ToList();
         }
 
         public List<ScheduleViewDTO> GetAllScheduleByFilmIdAndRoomId(int filmId, int roomId)
@@ -114,9 +123,15 @@ namespace HKCCinemas.Repo
             return true;
         }
 
-        public List<ScheduleViewDTO> Search(string keyword)
+        public List<ScheduleViewDTO> Search(QueryObject query)
         {
-            var data = _context.Schedules.Include(s => s.Film).Include(s => s.Cinemas).Where(s => s.Film.Title.Contains(keyword)).Select(s => new ScheduleViewDTO
+            var schedules = _context.Schedules.Include(r => r.Cinemas).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                schedules = schedules.Where(c => c.Film.Title.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return schedules.Include(s => s.Film).Include(s => s.Cinemas).Include(s => s.Room).Select(s => new ScheduleViewDTO
             {
                 Id = s.Id,
                 Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
@@ -125,8 +140,8 @@ namespace HKCCinemas.Repo
                 ShowDate = _mapper.Map<ShowDateDTO>(s.ShowDate),
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
-            }).ToList();
-            return data;
+                Count = schedules.Count()
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
     }
 }

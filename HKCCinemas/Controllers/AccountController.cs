@@ -1,5 +1,7 @@
-﻿using HKCCinemas.Interfaces;
+﻿using HKCCinemas.Helper;
+using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
+using HKCCinemas.Repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -102,7 +104,12 @@ namespace HKCCinemas.Controllers
             }
             else return BadRequest();
         }
-        
+        [HttpGet("role/getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _roleRepo.Count();
+            return Ok(data);
+        }
 
     }
 }

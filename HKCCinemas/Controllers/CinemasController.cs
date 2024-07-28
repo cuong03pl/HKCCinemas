@@ -10,6 +10,7 @@ using AutoMapper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.DTO;
 using HKCCinemas.Repo;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -27,7 +28,12 @@ namespace HKCCinemas.Controllers
             _cinemasRepo = cinemasRepo;
             _mapper = mapper;
         }
-
+        [HttpGet("getCount")]
+        public async Task<ActionResult<int>> Count()
+        {
+            var data = _cinemasRepo.Count();
+            return Ok(data);
+        }
         // GET: api/Cinemas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cinemas>>> GetCinemas()
@@ -48,14 +54,6 @@ namespace HKCCinemas.Controllers
           var data = _cinemasRepo.GetCinemasById(id);
             return Ok(data);
         }
-
-        [HttpGet("getCount")]
-        public async Task<ActionResult<Cinemas>> CountCinemas()
-        {
-            var data = _cinemasRepo.CountCinemas();
-            return Ok(data);
-        }
-        
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCinemas(int id, [FromForm] CinemasDTO cinemas)
@@ -92,10 +90,10 @@ namespace HKCCinemas.Controllers
             else return BadRequest();
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> SearchCinemas(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCinemas([FromQuery] QueryObject query)
         {
-            var data = _cinemasRepo.SearchCinemas(keyword);
+            var data = _cinemasRepo.SearchCinemas(query);
             return Ok(data);
 
         }

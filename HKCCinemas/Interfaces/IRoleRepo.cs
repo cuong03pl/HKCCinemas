@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HKCCinemas.Helper;
+using Microsoft.AspNetCore.Identity;
 
 namespace HKCCinemas.Interfaces
 {
@@ -9,7 +10,7 @@ namespace HKCCinemas.Interfaces
         Task<bool> UpdateRole(string roleId,string roleName);
         Task<IList<IdentityRole>> GetRolesByUser(string userId);
         List<IdentityRole> GetRoles();
-
+        int Count();
         Task<bool> SetRole(string userId, List<string> rolesId);
     }
 }

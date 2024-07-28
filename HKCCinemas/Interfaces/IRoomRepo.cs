@@ -1,4 +1,5 @@
 ﻿using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
@@ -11,9 +12,9 @@ namespace HKCCinemas.Interfaces
         bool createRoom(RoomDTO room);
         bool updateRoom(int id, RoomDTO room);
         bool deleteRoom(int id);
-
+        int Count();
         bool isCinemaRoomOccupied(int cinemasId, int filmId, int roomId, int showDateId, TimeSpan startTime);
-        List<RoomViewDTO> Search(string keyword);
+        List<RoomViewDTO> Search(QueryObject query);
 
     }
 }

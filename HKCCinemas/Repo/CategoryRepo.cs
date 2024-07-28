@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HKCCinemas.Repo
 {
@@ -16,12 +18,12 @@ namespace HKCCinemas.Repo
             _context = context;
             _mapper = mapper;
         }
-        public int CountCategory()
+        public int Count()
         {
-            return _context.Actor.Count();
+            return _context.Category.Count();
         }
 
-        public bool CreateCategory(CategoryDTO category)
+        public bool CreateCategory(CategoryViewDTO category)
         {
             var categoryMapper = _mapper.Map<Category>(category);
             _context.Category.Add(categoryMapper);
@@ -52,12 +54,17 @@ namespace HKCCinemas.Repo
             return categories;
         }
 
-        public List<Category> GetAllCategories()
+        public List<CategoryViewDTO> GetAllCategories()
         {
-            return _context.Category.ToList();
+            return _context.Category.Select(c => new CategoryViewDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Count = _context.Category.Count()
+            }).ToList();
         }
 
-        public bool UpdateCategory(int id, CategoryDTO category)
+        public bool UpdateCategory(int id, CategoryViewDTO category)
         {
             var categoryNow = _context.Category.Where(f => f.Id == id).FirstOrDefault();
             categoryNow.Name = category.Name;
@@ -76,9 +83,24 @@ namespace HKCCinemas.Repo
             return categories;
         }
 
-        public List<Category> SearchCategory(string keyword)
+        public List<CategoryViewDTO> SearchCategory(QueryObject query)
         {
-            return _context.Category.Where(c => c.Name.Contains(keyword)).ToList();
+            var categories = _context.Category.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                categories = categories.Where(c => c.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            return categories.Select(c => new CategoryViewDTO
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Count = categories.Count()
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
+
+
         }
+
+        
     }
 }

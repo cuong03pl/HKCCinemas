@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,11 @@ namespace HKCCinemas.Repo
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public int Count()
+        {
+            return _context.Rooms.Count();
         }
 
         public bool createRoom(RoomDTO room)
@@ -44,17 +50,14 @@ namespace HKCCinemas.Repo
         }
         public List<RoomViewDTO> GetRooms()
         {
-            var data = _context.Rooms.Include(r => r.Cinemas).Select(r => new RoomViewDTO
+            return _context.Rooms.Include(r => r.Cinemas).Select(r => new RoomViewDTO
             {
                 Id = r.Id,
                 Cinemas = _mapper.Map<CinemasDTO>(r.Cinemas),
                 RoomName = r.RoomName,
-
-        }).ToList();
-            return data;
+                Count = _context.Rooms.Count()
+            }).ToList();
         }
-
-        
 
         public bool updateRoom(int id ,RoomDTO room)
         {
@@ -111,15 +114,21 @@ namespace HKCCinemas.Repo
             return temp > 0 ? true : false;
         }
 
-        public List<RoomViewDTO> Search(string keyword)
+        public List<RoomViewDTO> Search(QueryObject query)
         {
-            return _context.Rooms.Include(r => r.Cinemas).Where(r => r.Cinemas.Name.Contains(keyword)).Select(r => new RoomViewDTO
+            var rooms = _context.Rooms.Include(r => r.Cinemas).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                rooms = rooms.Where(c => c.Cinemas.Name.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+           return rooms.Select(r => new RoomViewDTO
             {
                 Id = r.Id,
                 Cinemas = _mapper.Map<CinemasDTO>(r.Cinemas),
                 RoomName = r.RoomName,
-
-            }).ToList();
+                Count = rooms.Count(),
+            }).Skip(skipNumber).Take(query.PageSize).ToList();
         }
     }
 }

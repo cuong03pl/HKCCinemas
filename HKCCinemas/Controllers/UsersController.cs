@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HKCCinemas.Models;
 using HKCCinemas.Repo;
 using HKCCinemas.Interfaces;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -44,9 +45,9 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
         [HttpGet("getCountUser")]
-        public ActionResult<User> GetCountUser()
+        public ActionResult<User> Count()
         {
-            var data = _userRepo.GetCountUser();
+            var data = _userRepo.Count();
             return Ok(data);
         }
 
@@ -61,10 +62,10 @@ namespace HKCCinemas.Controllers
             return BadRequest("Xóa người dùng thất bại ");
         }
 
-        [HttpGet("search/{keyword}")]
-        public async Task<IActionResult> Search(string keyword)
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] QueryObject query)
         {
-            var data = _userRepo.Search(keyword);
+            var data = _userRepo.Search(query);
             return Ok(data);
 
         }
