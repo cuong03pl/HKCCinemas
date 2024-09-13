@@ -2,6 +2,7 @@
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -57,7 +58,19 @@ namespace HKCCinemas.Repo
             {
                 return IdentityResult.Failed(new IdentityError { Description = "Mật khẩu và mật khẩu xác nhận không khớp." });
             }
+            var existingUserEmail = userManager.Users
+    .FirstOrDefault(u => u.Email == registerModel.Email);
+            if (existingUserEmail != null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Email đã tồn tại." });
+            }
 
+            var existingUserName = userManager.Users
+    .FirstOrDefault(u => u.UserName == registerModel.Username);
+            if (existingUserName != null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Username đã tồn tại." });
+            }
             var newUser = new User()
             {
                 UserName = registerModel.Username,

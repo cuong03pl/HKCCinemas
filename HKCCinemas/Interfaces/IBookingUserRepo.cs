@@ -1,4 +1,5 @@
 ﻿using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Models;
 
 namespace HKCCinemas.Interfaces
@@ -15,5 +16,6 @@ namespace HKCCinemas.Interfaces
         List<object> GetTop5Films();
 
         List<object> GetTotalMoney();
+        List<BookingDetailDTO> GetAllBookingDetails(QueryObject query);
     }
 }

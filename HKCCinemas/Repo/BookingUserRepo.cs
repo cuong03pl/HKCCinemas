@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HKCCinemas.DTO;
+using HKCCinemas.Helper;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Models;
 using Microsoft.EntityFrameworkCore;
@@ -156,6 +157,40 @@ namespace HKCCinemas.Repo
                   .Take(5)
                   .ToList<object>();
             return bookingDetails;
+        }
+
+
+        public List<BookingDetailDTO> GetAllBookingDetails(QueryObject query)
+        {
+            var bookingDetails = _context.BookingDetails.
+                 Include(bd => bd.Ticket)
+                 .Include(bd => bd.Seat)
+                 .Include(bd => bd.BookingUser).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.Keyword))
+            {
+                bookingDetails = bookingDetails.Where(bd => bd.BookingUser.User.UserName.Contains(query.Keyword));
+            }
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            var data = bookingDetails
+                 .Select(bd => new BookingDetailDTO
+                 {
+                     Id = bd.Id,
+                     Schedule = new ScheduleViewDTO
+                     {
+                         Id = bd.Ticket.Id,
+                         Cinemas = _mapper.Map<CinemasDTO>(bd.Ticket.Schedule.Cinemas),
+                         Film = _mapper.Map<FilmDTO>(bd.Ticket.Schedule.Film),
+                         Room = _mapper.Map<RoomDTO>(bd.Ticket.Schedule.Room),
+                         ShowDate = _mapper.Map<ShowDateDTO>(bd.Ticket.Schedule.ShowDate),
+                         EndTime = bd.Ticket.Schedule.EndTime,
+                         StartTime = bd.Ticket.Schedule.StartTime,
+                     },
+                     Ticket = _mapper.Map<TicketDTO>(bd.Ticket),
+                     Seat = _mapper.Map<SeatDTO>(bd.Seat),
+                     User = bd.BookingUser.User,
+                     Count = bookingDetails.Count()
+                 }).Skip(skipNumber).Take(query.PageSize).ToList();
+            return data;
         }
 
         public List<object> GetTotalMoney()

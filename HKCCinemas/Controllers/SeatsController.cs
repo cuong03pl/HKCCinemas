@@ -52,10 +52,10 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
 
-        [HttpGet("/GetSeatByRoomId/{roomId}/{cinemasId}")]
-        public async Task<ActionResult<IEnumerable<SeatViewDTO>>> GetSeatsByRoomId(int roomId, int cinemasId)
+        [HttpGet("/GetSeatByRoomId/{roomId}")]
+        public async Task<ActionResult<IEnumerable<SeatViewDTO>>> GetSeatsByRoomId(int roomId)
         {
-            var data = _seatRepo.GetSeatByRoomId(roomId, cinemasId);
+            var data = _seatRepo.GetSeatByRoomId(roomId);
             return Ok(data);
         }
         [HttpPost("/GetSeatsByIds")]

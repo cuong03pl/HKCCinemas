@@ -10,6 +10,7 @@ using HKCCinemas.DTO;
 using HKCCinemas.Interfaces;
 using HKCCinemas.Repo;
 using System.Numerics;
+using HKCCinemas.Helper;
 
 namespace HKCCinemas.Controllers
 {
@@ -41,9 +42,17 @@ namespace HKCCinemas.Controllers
             var data = _bookingUserRepo.GetAllBookingUsersByUserId(userid);
             return Ok(data);
         }
-        
+
+
+        [HttpGet("GetAllBookingDetails")]
+        public async Task<ActionResult<IEnumerable<BookingDetail>>> GetAllBookingDetails([FromQuery] QueryObject query)
+        {
+            var data = _bookingUserRepo.GetAllBookingDetails(query);
+            return Ok(data);
+        }
 
         
+
 
         [HttpPost]
         public async Task<ActionResult<BookingDetail>> PostBookingDetail([FromForm] BookingUserDTO bookingDetail)

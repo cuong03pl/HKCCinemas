@@ -64,9 +64,9 @@ namespace HKCCinemas.Repo
             }).FirstOrDefault();
         }
 
-        public List<SeatViewDTO> GetSeatByRoomId(int roomId, int cinemasId)
+        public List<SeatViewDTO> GetSeatByRoomId(int roomId)
         {
-            return _context.Seats.Where(s => s.RoomID == roomId && s.Room.Cinemas.Id == cinemasId).Include(s => s.Room).ThenInclude(r => r.Cinemas).Select(s => new SeatViewDTO
+            return _context.Seats.Where(s => s.RoomID == roomId).Include(s => s.Room).ThenInclude(r => r.Cinemas).Select(s => new SeatViewDTO
             {
                 Id = s.Id,
                 Name = s.Name,

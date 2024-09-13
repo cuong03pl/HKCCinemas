@@ -15,6 +15,9 @@ namespace HKCCinemas.Interfaces
         List<TicketViewDTO> Search(QueryObject query);
         int Count();
 
+        //Task<string> GeneratePDFAsync(TicketRequest request);
+        //Task SendTicketEmailAsync(string pdfPath, TicketRequest request);
+
 
     }
 }

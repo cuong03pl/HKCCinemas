@@ -37,9 +37,6 @@ namespace HKCCinemas.Models
                 HasOne(fa => fa.Actor).
                 WithMany(fa => fa.filmActors).
                 HasForeignKey(fa => fa.actorId);
-
-            
-
            
             modelBuilder.Entity<Room>()
                 .HasOne(r => r.Cinemas)
@@ -76,7 +73,10 @@ namespace HKCCinemas.Models
                 .WithMany()
                 .HasForeignKey(c => c.CinemasCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
-          
+            modelBuilder.Entity<User>()
+                 .HasIndex(u => u.UserName).IsUnique();
+                  modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email).IsUnique();
 
         }
         public DbSet<Actor> Actor { get; set; }

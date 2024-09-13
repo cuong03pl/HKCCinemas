@@ -8,7 +8,7 @@ namespace HKCCinemas.Interfaces
     {
         List<SeatViewDTO> GetAllSeats();
         SeatViewDTO GetSeatById(int seatId);
-        List<SeatViewDTO> GetSeatByRoomId(int roomId, int cinemasId);
+        List<SeatViewDTO> GetSeatByRoomId(int roomId);
         List<SeatViewDTO> GetSeatsByIds(int[] seatIds);
         bool CreateSeat(SeatDTO seat);
         bool UpdateSeat(int seatId, SeatDTO seat);
