@@ -36,11 +36,15 @@ builder.Services.AddScoped<ITicketRepo, TicketRepo>();
 builder.Services.AddScoped<IBookingUserRepo, BookingUserRepo>();
 builder.Services.AddScoped<IRoleRepo, RoleRepo>();
 builder.Services.AddScoped<IFavouriteRepo, FavouriteRepo>();
+builder.Services.AddScoped<ISendMailService, SendMailService>();
 builder.Services.AddScoped<RandomAvatar>();
 builder.Services.AddDbContext<CinemasContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("HKCCinemasContext"));
 });
+
+var emailOptions = builder.Configuration.GetSection("MailSettings");
+builder.Services.Configure<MailSettings>(emailOptions);
 
 builder.Services.AddCors(options =>
 {
