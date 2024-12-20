@@ -51,21 +51,30 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
 
-        
+
 
 
         [HttpPost]
         public async Task<ActionResult<BookingDetail>> PostBookingDetail([FromForm] BookingUserDTO bookingDetail)
         {
-            if (await _bookingUserRepo.CreateBookingUser(bookingDetail))
+            try
             {
-                return Ok("Thêm thành công");
+                if (await _bookingUserRepo.CreateBookingUser(bookingDetail))
+                {
+                    return Ok("Thêm thành công");
+                }
+                else
+                {
+                    return BadRequest(new { message = "Không thể tạo booking. Vui lòng kiểm tra lại dữ liệu." });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest();
+                // Trả về thông tin lỗi chi tiết nếu có ngoại lệ
+                return BadRequest(new { message = "Đã xảy ra lỗi khi xử lý yêu cầu.", error = ex.Message });
             }
         }
+
 
         // DELETE: api/BookingDetails/5
         [HttpDelete("{id}")]

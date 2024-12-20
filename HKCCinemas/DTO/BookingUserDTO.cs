@@ -7,6 +7,7 @@ namespace HKCCinemas.DTO
     public class BookingUserDTO
     {
         public int Id { get; set; }
+        public string OrderCode { get; set; }
         public string UserId { get; set; }
         public int TicketId { get; set; }
         public DateTime? BookingDate { get; set; }

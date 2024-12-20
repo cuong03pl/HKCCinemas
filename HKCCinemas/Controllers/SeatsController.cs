@@ -44,7 +44,7 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
 
-        [HttpGet("/GetSeatById/{seatId}")]
+        [HttpGet("GetSeatById/{seatId}")]
         public async Task<ActionResult<IEnumerable<SeatViewDTO>>> GetSeatById(int seatId)
         {
             
@@ -52,13 +52,13 @@ namespace HKCCinemas.Controllers
             return Ok(data);
         }
 
-        [HttpGet("/GetSeatByRoomId/{roomId}")]
+        [HttpGet("GetSeatByRoomId/{roomId}")]
         public async Task<ActionResult<IEnumerable<SeatViewDTO>>> GetSeatsByRoomId(int roomId)
         {
             var data = _seatRepo.GetSeatByRoomId(roomId);
             return Ok(data);
         }
-        [HttpPost("/GetSeatsByIds")]
+        [HttpPost("GetSeatsByIds")]
         public async Task<ActionResult<IEnumerable<SeatViewDTO>>> GetSeatsByIds([FromForm] int[] seatIds)
         {
             var data = _seatRepo.GetSeatsByIds(seatIds);

@@ -59,6 +59,8 @@ namespace HKCCinemas.Repo
             return _context.ShowDates.Where(sd => sd.CinemasId == cinemasId).OrderBy(s => s.Date).ToList();
         }
 
+        
+
         public ShowDate GetShowDateById(int showdateId)
         {
             return _context.ShowDates.Where(sd => sd.Id == showdateId).FirstOrDefault();

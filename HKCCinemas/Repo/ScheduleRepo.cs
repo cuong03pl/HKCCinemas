@@ -73,9 +73,9 @@ namespace HKCCinemas.Repo
             }).ToList();
             return data;
         }
-        public List<ScheduleViewDTO> GetAllScheduleByShowDateAndCinemas(int showDateId, int cinemasId)
+        public List<ScheduleViewDTO> GetAllScheduleByShowDateAndCinemas(DateTime date, int cinemasId)
         {
-            var data = _context.Schedules.Where(s => s.ShowDateId == showDateId && s.CinemasId == cinemasId).Include(s => s.Film).Include(s => s.Cinemas).Select(s => new ScheduleViewDTO
+            var data = _context.Schedules.Where(s => s.ShowDate.Date == date && s.CinemasId == cinemasId).Include(s => s.Film).Include(s => s.Cinemas).Select(s => new ScheduleViewDTO
             {
                 Id = s.Id,
                 Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
@@ -87,11 +87,51 @@ namespace HKCCinemas.Repo
             }).ToList();
             return data;
         }
+
+        public List<ScheduleViewDTO> GetScheduleByShowDateAndFilm(DateTime date, int filmId)
+        {
+            var data = _context.Schedules.Where(s => s.ShowDate.Date == date && s.FilmId == filmId).Include(s => s.Film).Include(s => s.Cinemas).Select(s => new ScheduleViewDTO
+            {
+                Id = s.Id,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
+                Film = _mapper.Map<FilmDTO>(s.Film),
+                Room = _mapper.Map<RoomDTO>(s.Room),
+                ShowDate = _mapper.Map<ShowDateDTO>(s.ShowDate),
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+            }).ToList();
+            return data;
+        }
+
+        public List<ShowDate> GetShowDatesByFilmId(int filmId)
+        {
+            var showDates = _context.Schedules
+                .Where(s => s.FilmId == filmId)
+                .GroupBy(s => s.ShowDate.Date)
+                .Select(g => g.First().ShowDate)
+                .ToList();
+
+            return showDates;
+        }
         public ScheduleDTO GetScheduleByShowDateAndCinemasAndFilm(int showDateId, int cinemasId, int filmId)
         {
             var data = _mapper.Map<ScheduleDTO>(_context.Schedules.
                 Where(s => s.ShowDateId == showDateId && s.CinemasId == cinemasId && s.FilmId == filmId).FirstOrDefault()) ;
 
+            return data;
+        }
+        public List<ScheduleViewDTO> GetScheduleByFilm(int filmId)
+        {
+            var data = _context.Schedules.Where(s => s.FilmId == filmId ).Include(s => s.Film).Include(s => s.Cinemas).Select(s => new ScheduleViewDTO
+            {
+                Id = s.Id,
+                Cinemas = _mapper.Map<CinemasDTO>(s.Cinemas),
+                Film = _mapper.Map<FilmDTO>(s.Film),
+                Room = _mapper.Map<RoomDTO>(s.Room),
+                ShowDate = _mapper.Map<ShowDateDTO>(s.ShowDate),
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+            }).ToList();
             return data;
         }
         public ScheduleViewDTO GetScheduleById(int scheduleId)

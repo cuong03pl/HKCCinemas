@@ -49,12 +49,21 @@ namespace HKCCinemas.Controllers
             var scheduleMapper = _mapper.Map<List<ScheduleDTO>>(_scheduleRepo.GetAllScheduleByFilmIdAndRoomId(filmId, roomId));
             return Ok(scheduleMapper);
         }
-        [HttpGet("GetAllScheduleByShowDateAndCinemas/{showDateId}/{cinemasId}")]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetAllScheduleByShowDateAndCinemas(int showDateId, int cinemasId)
+        [HttpGet("GetAllScheduleByShowDateAndCinemas/{cinemasId}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetAllScheduleByShowDateAndCinemas([FromQuery] DateTime date, int cinemasId)
         {
-            var scheduleMapper = (_scheduleRepo.GetAllScheduleByShowDateAndCinemas(showDateId, cinemasId));
+            var scheduleMapper = (_scheduleRepo.GetAllScheduleByShowDateAndCinemas(date, cinemasId));
             return Ok(scheduleMapper);
         }
+
+        [HttpGet("GetScheduleByShowDateAndFilm/{filmId}")]
+        public async Task<ActionResult<IEnumerable<ScheduleViewDTO>>> GetScheduleByShowDateAndFilm([FromQuery] DateTime date, int filmId)
+        {
+            var scheduleMapper = _scheduleRepo.GetScheduleByShowDateAndFilm(date, filmId);
+            return Ok(scheduleMapper);
+        }
+
+
 
         [HttpGet("GetScheduleByShowDateAndCinemasAndFilm/{showDateId}/{cinemasId}/{filmId}")]
         public async Task<ActionResult<ScheduleDTO>> GetScheduleByShowDateAndCinemasAndFilm(int showDateId, int cinemasId, int filmId)
@@ -62,7 +71,23 @@ namespace HKCCinemas.Controllers
             var scheduleMapper = (_scheduleRepo.GetScheduleByShowDateAndCinemasAndFilm(showDateId, cinemasId, filmId));
             return Ok(scheduleMapper);
         }
-        // GET: api/Schedules/5
+
+
+        [HttpGet("GetScheduleByFilm/{filmId}")]
+        public async Task<ActionResult<ScheduleDTO>> GetScheduleByFilm( int filmId)
+        {
+            var scheduleMapper = (_scheduleRepo.GetScheduleByFilm( filmId));
+            return Ok(scheduleMapper);
+        }
+
+        [HttpGet("GetShowDatesByFilmId/{filmId}")]
+        public async Task<ActionResult<ShowDate>> GetShowDatesByFilmId(int filmId)
+        {
+            var showDates = (_scheduleRepo.GetShowDatesByFilmId(filmId));
+            return Ok(showDates);
+        }
+
+            // GET: api/Schedules/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ScheduleViewDTO>> GetSchedule(int id)
         {

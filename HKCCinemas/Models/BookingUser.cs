@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace HKCCinemas.Models
 {
@@ -8,7 +9,7 @@ namespace HKCCinemas.Models
         [Key]
         public int Id { get; set; }
 
-
+        public string OrderCode { get; set; }
         public string UserId { get; set; }
 
         [ForeignKey("UserId")]

@@ -26,6 +26,7 @@ namespace HKCCinemas.Repo
             var bookingUserAdd = new BookingUser
             {
                 BookingDetails = new List<BookingDetail>(),
+                OrderCode = bookingUser.OrderCode,
                 UserId = bookingUser.UserId,
                 BookingDate = DateTime.Now,
             };
@@ -35,7 +36,6 @@ namespace HKCCinemas.Repo
                 var bookingDetail = new BookingDetail
                 {
                     SeatId = item,
-                    
                     TicketId = bookingUser.TicketId,
                 };
                 bookingUserAdd.BookingDetails.Add(bookingDetail);
@@ -70,6 +70,7 @@ namespace HKCCinemas.Repo
           var data =  _context.BookingUsers.Include(bu => bu.BookingDetails).Select(bu => new BookingUserlViewDTO {
               Id = bu.Id,
               UserId = bu.UserId,
+              OrderCode = bu.OrderCode,
               Detail = bu.BookingDetails.Select(bd => new BookingDetailViewDTO
               {
                   Id = bd.Id,
@@ -97,6 +98,7 @@ namespace HKCCinemas.Repo
             {
                 Id = bu.Id,
                 UserId = bu.UserId,
+                OrderCode = bu.OrderCode,
                 Detail = bu.BookingDetails.Select(bd => new BookingDetailViewDTO
                 {
                     Id = bd.Id,
@@ -122,9 +124,6 @@ namespace HKCCinemas.Repo
         {
             return _context.BookingUsers.Count();
         }
-
-
-
         public List<object> GetTop5Films()
         {
             var bookingDetails = _context.BookingDetails
