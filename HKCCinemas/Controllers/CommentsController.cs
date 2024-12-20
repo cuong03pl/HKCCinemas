@@ -40,7 +40,7 @@ namespace HKCCinemas.Controllers
             var data =commentRepo.GetComments();
             return Ok(data);
         }
-        [HttpGet("/getcommentbyfilmid/{filmid}")]
+        [HttpGet("getcommentbyfilmid/{filmid}")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsByFilmId(int filmid)
         {
             var data = _mapper.Map<List<Comment>>( commentRepo.getCommentsByFilmId(filmid));
